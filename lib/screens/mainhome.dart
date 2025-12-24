@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:prexam/controllers/nav_controller.dart';
+import 'package:prexam/screens/courselist_screen.dart';
+import 'package:prexam/screens/pregram_screen.dart';
 import 'package:prexam/screens/reminder_list_page.dart';
 import 'package:prexam/widgets/mainhome/bottom_nav.dart';
 import 'package:prexam/widgets/mainhome/course_card.dart';
@@ -26,8 +28,10 @@ class HomeMainScreen extends StatelessWidget {
           case 1:
             return ReminderListPage();
           case 2:
-            return const Center(child: Text("Folder Screen"));
+            return PregramScreen();
           case 3:
+            return const Center(child: Text("Folder Screen"));
+          case 4:
             return const Center(child: Text("Profile Screen"));
           default:
             return mainHomeUI();
@@ -51,19 +55,38 @@ class HomeMainScreen extends StatelessWidget {
           const SizedBox(height: 15),
           PromoCard(),
           const SizedBox(height: 15),
-          const Text(
-            "Course",
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.w500,
-              fontFamily: 'Teacher',
-            ),
+
+          /// Row with Course title and See All
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Course",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Teacher',
+                ),
+              ),
+              GestureDetector(
+                onTap: () => Get.to(() => CourselistScreen()),
+                child: const Text(
+                  "See All...",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.blue,
+                    fontFamily: 'Teacher',
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
+
           CourseCard(),
         ],
       ),
     );
   }
 }
- 
