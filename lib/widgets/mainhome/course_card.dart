@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:prexam/screens/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:prexam/screens/course_list_screen.dart';//import 'package:prexam/screens/login.dart';
+//import 'package:prexam/screens/course_list_screen.dart';//import 'package:prexam/screens/login.dart';
 class CourseCard extends StatelessWidget {
   const CourseCard({Key? key}) : super(key: key);
 
@@ -12,7 +12,7 @@ class CourseCard extends StatelessWidget {
 
     if (isLoggedIn) {
       // Navigate to the actual course screen
-      Get.to(() => CourseListScreen());
+      //Get.to(() => CourseListScreen());
     } else {
       // Not logged in → redirect to login/register
       Get.snackbar("Login required", "Please login or register to access this course");

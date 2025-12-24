@@ -15,11 +15,14 @@ class BottomNavBar extends StatelessWidget {
         onTap: (i) => navController.changeIndex(i),
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.alarm), label: "Reminder"),
+          BottomNavigationBarItem(icon: Icon(Icons.newspaper_sharp), label: "Pregram"),
           BottomNavigationBarItem(icon: Icon(Icons.folder), label: "Folder"),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          
         ],
       ),
     );
