@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/reminder_controller.dart';
 import '../models/reminder.dart';
 import 'package:prexam/widgets/mainhome/notification_service.dart';
+
 class EditReminderPage extends StatefulWidget {
   final Reminder reminder;
   final int index;
@@ -27,7 +28,6 @@ class _EditReminderPageState extends State<EditReminderPage> {
     super.initState();
     titleCtrl = TextEditingController(text: widget.reminder.title);
     descCtrl = TextEditingController(text: widget.reminder.description);
-
     selectedTime = TimeOfDay(
       hour: widget.reminder.dateTime.hour,
       minute: widget.reminder.dateTime.minute,
@@ -47,71 +47,171 @@ class _EditReminderPageState extends State<EditReminderPage> {
     final controller = Get.find<ReminderController>();
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text("Edit Reminder")),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Title Input
-            TextField(
-              controller: titleCtrl,
-              decoration: const InputDecoration(labelText: "Title"),
-            ),
-            const SizedBox(height: 15),
-
-            // Description Input
-            TextField(
-              controller: descCtrl,
-              decoration: const InputDecoration(labelText: "Description"),
-            ),
-            const SizedBox(height: 20),
-
-            // Time Picker
-            GestureDetector(
-              onTap: pickTime,
-              child: Container(
-                padding: const EdgeInsets.all(15),
-                color: Colors.grey[200],
-                child: Text("Time: ${selectedTime.format(context)}"),
+      appBar: AppBar(
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.white,
+          title: const Text(
+            "Create Reminder",
+            style: TextStyle(
+              fontFamily: 'Teacher',
+              fontSize: 25,
               ),
-            ),
+          ),
+        ),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            const SizedBox(height: 30),
+              /// 📦 Card
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Title",
+                      style: TextStyle(
+                        fontFamily: "Teacher",
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: titleCtrl,
+                      style: const TextStyle(fontFamily: "Teacher"),
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
 
-            // Save Button
-            ElevatedButton(
-              onPressed: () {
-                final updatedDateTime = DateTime(
-                  widget.reminder.dateTime.year,
-                  widget.reminder.dateTime.month,
-                  widget.reminder.dateTime.day,
-                  selectedTime.hour,
-                  selectedTime.minute,
-                );
+                    const SizedBox(height: 16),
 
-                final updatedReminder = Reminder(
-                  id: widget.reminder.id,
-                  title: titleCtrl.text,
-                  description: descCtrl.text,
-                  dateTime: updatedDateTime,
-                );
+                    const Text(
+                      "Description",
+                      style: TextStyle(
+                        fontFamily: "Teacher",
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    TextField(
+                      controller: descCtrl,
+                      style: const TextStyle(fontFamily: "Teacher"),
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
 
-                controller.updateReminder(widget.index, updatedReminder);
+                    const SizedBox(height: 20),
 
-                // Optionally, reschedule notification
-                NotificationService.scheduleNotification(
-                  id: updatedReminder.id,
-                  title: updatedReminder.title,
-                  body: updatedReminder.description,
-                  scheduledTime: updatedReminder.dateTime,
-                );
+                    /// ⏰ Time Picker (LEFT)
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onTap: pickTime,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Text(
+                            selectedTime.format(context),
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontFamily: "Teacher",
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
 
-                Get.back();
-              },
-              child: const Text("Save"),
-            ),
-          ],
+              const Spacer(),
+
+              /// 🔘 Save Button (CENTER + UP 20px)
+              Align(
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: SizedBox(
+                    width: 140,
+                    height: 52,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        final updatedDateTime = DateTime(
+                          widget.reminder.dateTime.year,
+                          widget.reminder.dateTime.month,
+                          widget.reminder.dateTime.day,
+                          selectedTime.hour,
+                          selectedTime.minute,
+                        );
+
+                        final updatedReminder = Reminder(
+                          id: widget.reminder.id,
+                          title: titleCtrl.text,
+                          description: descCtrl.text,
+                          dateTime: updatedDateTime,
+                        );
+
+                        controller.updateReminder(
+                          widget.index,
+                          updatedReminder,
+                        );
+
+                        /// 🔔 Reschedule notification
+                        NotificationService.scheduleNotification(
+                          id: updatedReminder.id,
+                          title: updatedReminder.title,
+                          body: updatedReminder.description,
+                          scheduledTime: updatedReminder.dateTime,
+                        );
+
+                        Get.back();
+                      },
+                      child: const Text(
+                        "Save",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: "Teacher",
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

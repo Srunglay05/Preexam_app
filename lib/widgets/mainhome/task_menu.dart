@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:prexam/screens/create_reminder_page.dart';
+import 'package:prexam/screens/solution_screen.dart';
+import 'package:prexam/screens/task_screen.dart';
+//import 'package:prexam/screens/task_screen.dart';
 //import 'package:prexam/screens/reminder_list_page.dart';
 class TaskMenu extends StatelessWidget {
   const TaskMenu({Key? key}) : super(key: key);
@@ -14,7 +17,7 @@ class TaskMenu extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Left big pink box
-          Container(
+          /*Container(
             width: 160,
             height: 180,
             decoration: BoxDecoration(
@@ -34,19 +37,79 @@ class TaskMenu extends StatelessWidget {
               icon: FontAwesomeIcons.clipboardCheck,
               iconSize: 30,
               fontSize: 20,
-              onAddPressed: () {}, // no action for Task
+              onAddPressed: () {
+                Get.to(() => TaskScreen());
+              }, // no action for Task
             ),
+          ),*/
+          // Right column with two smaller boxes
+          Column(
+            children: [
+              // REMINDER BOX —> Navigate on pressing +
+              Container(
+                width: 150,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 254, 152, 188),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.4),
+                      spreadRadius: 1,
+                      blurRadius: 6,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: buildBoxContent(
+                  title: "Task",
+                  icon: FontAwesomeIcons.clipboardCheck,
+                  iconSize: 22,
+                  fontSize: 16,
+                  onAddPressed: () {
+                    Get.to(() => TaskScreen());
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              // SOLUTION BOX
+              Container(
+                width: 150,
+                height: 90,
+                decoration: BoxDecoration(
+                  color: Colors.lightBlueAccent,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.4),
+                      spreadRadius: 1,
+                      blurRadius: 6,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: buildBoxContent(
+                  title: "Calculator Score",
+                  icon: FontAwesomeIcons.calculator,
+                  iconSize: 22,
+                  fontSize: 16,
+                  onAddPressed: () {}, // no action
+                ),
+              ),
+            ],
           ),
 
-          const SizedBox(width: 16),
+          const SizedBox(width: 25),
 
           // Right column with two smaller boxes
           Column(
             children: [
               // REMINDER BOX —> Navigate on pressing +
               Container(
-                width: 140,
-                height: 85,
+                width: 150,
+                height: 90,
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 188, 166, 255),
                   borderRadius: BorderRadius.circular(10),
@@ -74,8 +137,8 @@ class TaskMenu extends StatelessWidget {
 
               // SOLUTION BOX
               Container(
-                width: 140,
-                height: 85,
+                width: 150,
+                height: 90,
                 decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 255, 199, 139),
                   borderRadius: BorderRadius.circular(10),
@@ -93,7 +156,9 @@ class TaskMenu extends StatelessWidget {
                   icon: FontAwesomeIcons.lightbulb,
                   iconSize: 20,
                   fontSize: 16,
-                  onAddPressed: () {}, // no action
+                  onAddPressed: () {
+                    Get.to(() => SolutionScreen());
+                  }, // no action
                 ),
               ),
             ],
