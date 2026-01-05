@@ -65,7 +65,13 @@ class _EditReminderPageState extends State<EditReminderPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
+              Center(
+              child: Image.asset(
+                "assets/images/timez.png",
+                height: 190,
+                fit: BoxFit.contain,
+              ),
+            ),
               /// 📦 Card
               Container(
                 padding: const EdgeInsets.all(20),

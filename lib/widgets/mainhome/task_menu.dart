@@ -2,222 +2,144 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:prexam/screens/create_reminder_page.dart';
+import 'package:prexam/screens/score_input.dart';
 import 'package:prexam/screens/solution_screen.dart';
 import 'package:prexam/screens/task_screen.dart';
-//import 'package:prexam/screens/task_screen.dart';
-//import 'package:prexam/screens/reminder_list_page.dart';
+
 class TaskMenu extends StatelessWidget {
   const TaskMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Left big pink box
-          /*Container(
-            width: 160,
-            height: 180,
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 254, 152, 188),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.4),
-                  spreadRadius: 1,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: buildBoxContent(
-              title: "Task",
-              icon: FontAwesomeIcons.clipboardCheck,
-              iconSize: 30,
-              fontSize: 20,
-              onAddPressed: () {
-                Get.to(() => TaskScreen());
-              }, // no action for Task
-            ),
-          ),*/
-          // Right column with two smaller boxes
-          Column(
-            children: [
-              // REMINDER BOX —> Navigate on pressing +
-              Container(
-                width: 150,
-                height: 90,
-                decoration: BoxDecoration(
+      padding: const EdgeInsets.all(11),
+      child: Center(
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 15,
+          runSpacing: 10,
+          children: [
+            /// COLUMN 1
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildCard(
                   color: const Color.fromARGB(255, 254, 152, 188),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 1,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: buildBoxContent(
                   title: "Task",
                   icon: FontAwesomeIcons.clipboardCheck,
-                  iconSize: 22,
-                  fontSize: 16,
-                  onAddPressed: () {
+                  onTap: () {
                     Get.to(() => TaskScreen());
                   },
                 ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // SOLUTION BOX
-              Container(
-                width: 150,
-                height: 90,
-                decoration: BoxDecoration(
+                const SizedBox(height: 10),
+                _buildCard(
                   color: Colors.lightBlueAccent,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 1,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: buildBoxContent(
-                  title: "Calculator Score",
+                  title: "Tally Score",
                   icon: FontAwesomeIcons.calculator,
-                  iconSize: 22,
-                  fontSize: 16,
-                  onAddPressed: () {}, // no action
+                  onTap: () {
+                    Get.to(() => ScoreInputPage());
+                  },
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
 
-          const SizedBox(width: 25),
-
-          // Right column with two smaller boxes
-          Column(
-            children: [
-              // REMINDER BOX —> Navigate on pressing +
-              Container(
-                width: 150,
-                height: 90,
-                decoration: BoxDecoration(
+            /// COLUMN 2
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _buildCard(
                   color: const Color.fromARGB(255, 188, 166, 255),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 1,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: buildBoxContent(
                   title: "Reminder",
                   icon: FontAwesomeIcons.bell,
-                  iconSize: 20,
-                  fontSize: 16,
-                  onAddPressed: () {
+                  onTap: () {
                     Get.to(() => CreateReminderPage());
                   },
                 ),
-              ),
-
-              const SizedBox(height: 10),
-
-              // SOLUTION BOX
-              Container(
-                width: 150,
-                height: 90,
-                decoration: BoxDecoration(
+                const SizedBox(height: 10),
+                _buildCard(
                   color: const Color.fromARGB(255, 255, 199, 139),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.4),
-                      spreadRadius: 1,
-                      blurRadius: 6,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: buildBoxContent(
                   title: "Solution",
                   icon: FontAwesomeIcons.lightbulb,
-                  iconSize: 20,
-                  fontSize: 16,
-                  onAddPressed: () {
+                  onTap: () {
                     Get.to(() => SolutionScreen());
-                  }, // no action
+                  },
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget buildBoxContent({
+  /// ================= CARD UI =================
+  Widget _buildCard({
+    required Color color,
     required String title,
     required IconData icon,
-    required double iconSize,
-    required double fontSize,
-    required VoidCallback onAddPressed,
+    required VoidCallback onTap,
   }) {
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(14),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FaIcon(icon, size: iconSize, color: Colors.white),
-              const SizedBox(height: 8),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: fontSize,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ],
+    return Container(
+      width: 145,
+      height: 100,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.4),
+            spreadRadius: 1,
+            blurRadius: 6,
+            offset: const Offset(0, 3),
           ),
-        ),
+        ],
+      ),
+      child: Stack(
+        children: [
 
-        // + BUTTON
-        Positioned(
-          right: 0.1,
-          top: 0.1,
-          child: GestureDetector(
-            onTap: onAddPressed,
-            child: Container(
-              width: 30,
-              height: 30,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(2),
-              ),
-              child: const Icon(
-                Icons.add,
-                size: 18,
-                color: Colors.black87,
+          /// ICON + TITLE
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FaIcon(icon, size: 22, color: Colors.white),
+                const SizedBox(height: 8),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          /// + BUTTON
+          Positioned(
+            right: 0.1,
+            top: 0.1,
+            child: GestureDetector(
+              onTap: onTap,
+              child: Container(
+                width: 30,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Icon(
+                  Icons.add,
+                  size: 18,
+                  color: Colors.black87,
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

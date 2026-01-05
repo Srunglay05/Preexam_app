@@ -45,7 +45,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 60),
+              padding: EdgeInsets.only(left: 20, right: 20, top: 55),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -79,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                       height: 1.5,
                     ),
                   ),
-                  SizedBox(height: 85),
+                  SizedBox(height: 65),
                   Center(
                     child: GestureDetector(
                       onTap: () {

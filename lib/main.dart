@@ -30,7 +30,7 @@ void main() async {
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (context) => const MyApp(),
+      builder: (context) =>const MyApp(),
     ),
   );
 }

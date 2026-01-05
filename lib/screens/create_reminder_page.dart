@@ -57,6 +57,13 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Image.asset(
+                "assets/images/timee.png",
+                height: 180,
+                fit: BoxFit.contain,
+              ),
+            ),
             /// 📅 Date
             Text(
               "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
@@ -67,7 +74,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
 
             /// 📦 Card (same as EditReminder)
             Container(

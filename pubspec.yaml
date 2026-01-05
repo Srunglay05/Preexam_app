@@ -54,6 +54,7 @@ dependencies:
   syncfusion_flutter_pdfviewer: 32.1.19
   flutter_local_notifications: ^15.0.0
   timezone: 0.9.4
+  
 
 
 
@@ -85,7 +86,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - assets/images/
-    - assets/pdfs/khmer.pdf
+    - assets/pdfs/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

@@ -12,9 +12,9 @@ class SolutionScreen extends StatelessWidget{
     {'icon': Icons.book, 'title': 'Khmer Literature'},
     {'icon': Icons.map_outlined, 'title': 'Historial'},
     {'icon': Icons.my_library_books, 'title': 'English Literature'},
-    {'icon': Icons.nature_people, 'title': 'Citizens ~ Ethics'},
+    {'icon': Icons.nature_people, 'title': 'Morality'},
     {'icon': Icons.landscape, 'title': 'Geography'},
-    {'icon': Icons.public, 'title': 'Earth Science'},
+    {'icon': Icons.public, 'title': 'Earth Science'}, 
   ];
 
   @override

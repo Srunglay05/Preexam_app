@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:prexam/screens/sociallist.dart';
 
 class SocialScreen extends StatelessWidget {
   const SocialScreen({super.key});
 
-  // Example data for the list
   final List<Map<String, dynamic>> socialTasks = const [
-    {'icon': Icons.nature_people, 'title': 'Citizens ~ Ethics'},
+    {'icon': Icons.nature_people, 'title': 'Morality'},
     {'icon': Icons.landscape, 'title': 'Geography'},
     {'icon': Icons.calculate, 'title': 'Mathematics'},
     {'icon': Icons.public, 'title': 'Earth Science'},
@@ -20,17 +20,16 @@ class SocialScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 244, 143, 143),
+        backgroundColor: const Color(0xFFF48F8F),
         foregroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
-        title: Text(
+        title: const Text(
           'Social Task',
           style: TextStyle(
-            color: Colors.white,
             fontFamily: 'Teacher',
             fontSize: 23,
           ),
@@ -38,47 +37,61 @@ class SocialScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: ListView.separated(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         itemCount: socialTasks.length,
-        separatorBuilder: (context, index) => SizedBox(height: 12),
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final task = socialTasks[index];
-          return Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            height: 70,
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 253, 178, 178),
+
+          return Material(
+            color: Colors.transparent,
+            child: InkWell(
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  offset: Offset(0, 3),
-                  blurRadius: 6,
-                ),
-              ],
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  task['icon'],
-                  size: 36,
-                  color: Color.fromARGB(255, 213, 98, 98),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      task['title'],
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: 'Teacher',
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+              onTap: () {
+                Get.to(
+                  () => SocialListScreen(
+                    subjectTitle: task['title'],
                   ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                height: 70,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFDB2B2),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      offset: const Offset(0, 3),
+                      blurRadius: 6,
+                    ),
+                  ],
                 ),
-              ],
+                child: Row(
+                  children: [
+                    Icon(
+                      task['icon'],
+                      size: 36,
+                      color: const Color(0xFFD56262),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          task['title'],
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: 'Teacher',
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         },
