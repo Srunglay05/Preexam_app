@@ -12,30 +12,33 @@ import 'package:prexam/widgets/mainhome/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
-  // needed for async Firebase init
-    tz.initializeTimeZones();
-      await NotificationService.init();
 
-     NotificationService.onNotificationTriggered = (id) {
+  // Initialize Firebase first
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Initialize notifications
+  tz.initializeTimeZones();
+  await NotificationService.init();
+
+  // Create a single instance of controller
+  final reminderController = Get.put(ReminderController());
+
+  // Set callback to update notification fired count
+  NotificationService.onNotificationTriggered = (id) {
     print("🔔 Notification fired! ID: $id");
-    // Update your controller badge count
-    final controller = Get.put(ReminderController());
-    controller.incrementFiredCount();
+    reminderController.incrementFiredCount();
   };
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  Get.put(ReminderController());
+  // Load reminders from Firebase once
+  await reminderController.loadReminders();
+
   runApp(
     DevicePreview(
       enabled: !kReleaseMode,
-      builder: (context) =>const MyApp(),
+      builder: (context) => const MyApp(),
     ),
   );
 }
-
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

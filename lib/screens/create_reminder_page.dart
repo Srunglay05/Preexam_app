@@ -194,12 +194,12 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
 
                       controller.addReminder(reminder);
 
-                      NotificationService.scheduleNotification(
-                        id: reminder.id,
-                        title: reminder.title,
-                        body: reminder.description,
-                        scheduledTime: reminder.dateTime,
-                      );
+                      NotificationService.scheduleReminder(
+                      id: reminder.id,
+                      title: reminder.title,
+                      body: reminder.description,
+                      scheduledTime: reminder.dateTime,
+                    );
 
                       NotificationService.onNotificationTriggered = (id) {
                         controller.incrementFiredCount();

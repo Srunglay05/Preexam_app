@@ -14,6 +14,9 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
@@ -31,12 +34,15 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+
+        multiDexEnabled = true
     }
 
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
+            // Signing with the debug keys for now, so flutter run --release works.
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -46,13 +52,17 @@ flutter {
     source = "../.."
 }
 
+
+repositories {
+    google()
+    mavenCentral()
+}
+
 // --------------------- Add Firebase dependencies ---------------------
 dependencies {
-    // Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-auth") // Note: No -ktx needed for latest versions
+    implementation("com.google.firebase:firebase-firestore")
 
-    // Firebase services
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    // Add more Firebase services here if needed (Storage, Messaging, Analytics)
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

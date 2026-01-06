@@ -195,12 +195,13 @@ class _EditReminderPageState extends State<EditReminderPage> {
                         );
 
                         /// 🔔 Reschedule notification
-                        NotificationService.scheduleNotification(
+                       NotificationService.scheduleReminder(
                           id: updatedReminder.id,
                           title: updatedReminder.title,
                           body: updatedReminder.description,
                           scheduledTime: updatedReminder.dateTime,
                         );
+
 
                         Get.back();
                       },

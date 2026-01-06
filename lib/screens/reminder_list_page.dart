@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-//import 'package:prexam/screens/mainhome.dart';
 import '../controllers/reminder_controller.dart';
 import 'create_reminder_page.dart';
 import 'edit_reminder_page.dart';
 
-class ReminderListPage extends StatelessWidget {
+class ReminderListPage extends StatefulWidget {
   const ReminderListPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.find<ReminderController>();
+  State<ReminderListPage> createState() => _ReminderListPageState();
+}
 
+class _ReminderListPageState extends State<ReminderListPage> {
+  final controller = Get.find<ReminderController>();
+
+  @override
+  void initState() {
+    super.initState();
+    // Load reminders from Firebase when the page opens
+    controller.loadReminders();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -118,7 +129,7 @@ class ReminderListPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                   "${reminder.dateTime.hour}:${reminder.dateTime.minute.toString().padLeft(2, '0')}",
+                                  "${reminder.dateTime.hour}:${reminder.dateTime.minute.toString().padLeft(2, '0')}",
                                   style: const TextStyle(
                                     color: Colors.grey,
                                     fontSize: 14,
@@ -154,8 +165,33 @@ class ReminderListPage extends StatelessWidget {
 
                               // DELETE BUTTON (RED)
                               GestureDetector(
-                                onTap: () {
-                                  controller.deleteReminder(index);
+                                onTap: () async {
+                                  final confirmed = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Confirm Delete'),
+                                      content: const Text(
+                                          'Are you sure you want to delete this reminder?'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, false),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, true),
+                                          child: const Text('Delete',
+                                              style: TextStyle(
+                                                  color: Colors.red)),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirmed == true) {
+                                    controller.deleteReminder(index);
+                                  }
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(6),
@@ -198,7 +234,7 @@ class ReminderListPage extends StatelessWidget {
                         fontSize: 20,
                         color: Colors.white,
                         fontFamily: "Teacher",
-                      ), 
+                      ),
                     ),
                   ),
                 ),
