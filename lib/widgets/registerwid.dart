@@ -158,13 +158,16 @@ class RegisterWid {
                   children: [
                     const TextSpan(
                       text: "Already have an account? ",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: 'Teacher'),
                     ),
                     TextSpan(
                       text: "Login",
                       style: const TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
+                        fontFamily: 'Teacher'
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {

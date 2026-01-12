@@ -20,8 +20,8 @@ class BottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.alarm), label: "Reminder"),
           BottomNavigationBarItem(icon: Icon(Icons.newspaper_sharp), label: "Pregram"),
-          BottomNavigationBarItem(icon: Icon(Icons.folder), label: "Folder"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(icon: Icon(Icons.calculate_sharp), label: "Calculate"),
+          //BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
           
         ],
       ),

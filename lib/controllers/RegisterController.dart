@@ -33,7 +33,6 @@ class RegisterController extends GetxController {
         : GoogleSignIn();
   }
 
-
   Future<void> register() async {
     final username = usernameController.text.trim();
     final email = emailController.text.trim();

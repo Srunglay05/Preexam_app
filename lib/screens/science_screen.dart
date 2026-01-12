@@ -12,7 +12,7 @@ class ScienceScreen extends StatelessWidget {
     {'icon': Icons.science_outlined, 'title': 'Chemistry'},
     {'icon': Icons.book, 'title': 'Khmer Literature'},
     {'icon': Icons.map_outlined, 'title': 'Historial'},
-    {'icon': Icons.my_library_books, 'title': 'English Literature'},
+    //{'icon': Icons.my_library_books, 'title': 'English Literature'},
   ];
 
   @override

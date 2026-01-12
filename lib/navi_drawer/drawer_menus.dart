@@ -1,10 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:prexam/screens/about_us.dart';
+import 'package:prexam/screens/register.dart';
+import 'package:prexam/admin/options_screen.dart';
+
 import 'wave_clipper.dart';
-import 'package:prexam/widgets/loginwid.dart'; // make sure to import your login page
-import 'package:prexam/screens/login.dart';
 
 class DrawerMenus extends StatefulWidget {
   const DrawerMenus({super.key});
@@ -16,6 +23,9 @@ class DrawerMenus extends StatefulWidget {
 class _DrawerMenusState extends State<DrawerMenus> {
   String username = 'User';
   String email = '';
+  String profileImageUrl = '';
+
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -23,44 +33,81 @@ class _DrawerMenusState extends State<DrawerMenus> {
     fetchUserData();
   }
 
+  /// Fetch user data from Firebase
   Future<void> fetchUserData() async {
     final user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      setState(() {
-        email = user.email ?? '';
-      });
+    if (user == null) return;
 
-      try {
-        final doc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
+    setState(() {
+      email = user.email ?? '';
+    });
 
-        if (doc.exists && doc.data()!.containsKey('username')) {
-          setState(() {
-            username = doc['username'];
-          });
-        }
-      } catch (e) {
-        debugPrint('Error fetching user data: $e');
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        final data = doc.data()!;
+        setState(() {
+          username = data['username'] ?? 'User';
+          profileImageUrl = data['profileImage'] ?? '';
+        });
       }
+    } catch (e) {
+      debugPrint('Error fetching user data: $e');
     }
   }
 
+  /// Pick image and upload to Firebase Storage
+  Future<void> pickAndUploadImage() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
+
+    if (pickedFile == null) return;
+
+    final file = File(pickedFile.path);
+
+    try {
+      final ref = FirebaseStorage.instance
+          .ref()
+          .child('profile_pictures/${user.uid}.jpg');
+
+      await ref.putFile(file);
+      final downloadUrl = await ref.getDownloadURL();
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .update({'profileImage': downloadUrl});
+
+      setState(() {
+        profileImageUrl = downloadUrl;
+      });
+    } catch (e) {
+      debugPrint('Image upload error: $e');
+    }
+  }
+
+  /// Logout user
   Future<void> logout(BuildContext context) async {
-    // 1️⃣ Sign out from Firebase
     await FirebaseAuth.instance.signOut();
 
-    // 2️⃣ Clear saved login info from SharedPreferences
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
-    // 3️⃣ Navigate to Login page and remove all previous routes
     if (!mounted) return;
+
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (context) =>  LoginScreen()),
+      MaterialPageRoute(builder: (_) =>  RegisterScreen()),
       (route) => false,
     );
   }
@@ -71,6 +118,7 @@ class _DrawerMenusState extends State<DrawerMenus> {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
+          /// Header
           ClipPath(
             clipper: WaveClipper(),
             child: Container(
@@ -88,10 +136,18 @@ class _DrawerMenusState extends State<DrawerMenus> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const CircleAvatar(
-                    radius: 35,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, size: 40),
+                  GestureDetector(
+                    onTap: pickAndUploadImage,
+                    child: CircleAvatar(
+                      radius: 35,
+                      backgroundColor: Colors.white,
+                      backgroundImage: profileImageUrl.isNotEmpty
+                          ? NetworkImage(profileImageUrl)
+                          : null,
+                      child: profileImageUrl.isEmpty
+                          ? const Icon(Icons.person, size: 40)
+                          : null,
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Text(
@@ -105,31 +161,61 @@ class _DrawerMenusState extends State<DrawerMenus> {
                   ),
                   Text(
                     email,
-                    style: const TextStyle(color: Colors.white70),
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontFamily: 'Teacher',
+                    ),
                   ),
                 ],
               ),
             ),
           ),
 
+          /// Home
           ListTile(
             leading: const Icon(Icons.home, color: Colors.blue),
             title: const Text('Home', style: TextStyle(fontFamily: 'Teacher')),
             onTap: () => Navigator.pop(context),
           ),
-          const ListTile(
-            leading: Icon(Icons.settings, color: Colors.blue),
-            title: Text('Settings', style: TextStyle(fontFamily: 'Teacher')),
+
+          /// Settings
+          ListTile(
+            leading: const Icon(Icons.settings, color: Colors.blue),
+            title:
+                const Text('Settings', style: TextStyle(fontFamily: 'Teacher')),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const OptionsScreen(),
+                ),
+              );
+            },
           ),
-          const ListTile(
-            leading: Icon(Icons.info, color: Colors.blue),
-            title: Text('About', style: TextStyle(fontFamily: 'Teacher')),
+
+          /// About
+          ListTile(
+            leading: const Icon(Icons.info, color: Colors.blue),
+            title: const Text('About', style: TextStyle(fontFamily: 'Teacher')),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AboutUsScreen(),
+                ),
+              );
+            },
           ),
+
           const Divider(),
+
+          /// Logout
           ListTile(
             leading: const Icon(Icons.logout, color: Colors.red),
             title: const Text('Logout', style: TextStyle(fontFamily: 'Teacher')),
-            onTap: () => logout(context), // ✅ Use the logout function
+            onTap: () => logout(context),
           ),
         ],
       ),

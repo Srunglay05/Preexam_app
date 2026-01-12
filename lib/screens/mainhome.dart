@@ -5,6 +5,7 @@ import 'package:prexam/navi_drawer/drawer_menus.dart';
 import 'package:prexam/screens/courselist_screen.dart';
 import 'package:prexam/screens/pregram_screen.dart';
 import 'package:prexam/screens/reminder_list_page.dart';
+import 'package:prexam/screens/score_input.dart';
 import 'package:prexam/widgets/mainhome/bottom_nav.dart';
 import 'package:prexam/widgets/mainhome/course_card.dart';
 import 'package:prexam/widgets/mainhome/promo_card.dart';
@@ -41,9 +42,9 @@ class HomeMainScreen extends StatelessWidget {
           case 2:
             return PregramScreen();
           case 3:
-            return const Center(child: Text("Folder Screen"));
-          case 4:
-            return const Center(child: Text("Profile Screen"));
+            return ScoreInputPage();
+          /*case 4:
+            return const Center(child: Text("Profile Screen"));*/
           default:
             return mainHomeUI();
         }

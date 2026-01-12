@@ -12,7 +12,7 @@ class SocialScreen extends StatelessWidget {
     {'icon': Icons.public, 'title': 'Earth Science'},
     {'icon': Icons.book, 'title': 'Khmer Literature'},
     {'icon': Icons.map_sharp, 'title': 'Historial'},
-    {'icon': Icons.my_library_books, 'title': 'English Literature'},
+    //{'icon': Icons.my_library_books, 'title': 'English Literature'},
   ];
 
   @override
