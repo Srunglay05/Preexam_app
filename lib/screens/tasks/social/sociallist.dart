@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:prexam/screens/pdfviewscreen.dart';
-import '../models/subject_pdf_data.dart';
+import '../../../models/subject_pdf_data.dart';
 
 class SocialListScreen extends StatelessWidget {
   final String subjectTitle;

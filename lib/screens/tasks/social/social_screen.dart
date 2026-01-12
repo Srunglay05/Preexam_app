@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:prexam/screens/sociallist.dart';
+import 'package:prexam/screens/tasks/social/sociallist.dart';
 
 class SocialScreen extends StatelessWidget {
   const SocialScreen({super.key});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:prexam/screens/social_screen.dart';
-import 'package:prexam/screens/science_screen.dart';
+import 'package:prexam/screens/tasks/social/social_screen.dart';
+import 'package:prexam/screens/tasks/science/science_screen.dart';
 
 class TaskScreen extends StatelessWidget {
   const TaskScreen({super.key});

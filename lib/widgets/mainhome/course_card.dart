@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:prexam/screens/register.dart';
+import 'package:prexam/screens/authentication/register.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:prexam/screens/course_list_screen.dart';//import 'package:prexam/screens/login.dart';
 class CourseCard extends StatelessWidget {

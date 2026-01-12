@@ -20,43 +20,90 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          ListTile(
-            leading: Icon(icon, color: Colors.blue),
-            title: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'Teacher'
-              ),
+    return Column(
+      children: [
+        /// CATEGORY HEADER
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 18,
+              vertical: 18,
             ),
-            trailing: Icon(
-              isExpanded
-                  ? Icons.keyboard_arrow_up
-                  : Icons.keyboard_arrow_down,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.12),
+                  blurRadius: 15,
+                  offset: const Offset(0, 6),
+                ),
+              ],
             ),
-            onTap: onTap,
+            child: Row(
+              children: [
+                Icon(icon, size: 28, color: Colors.blue),
+                const SizedBox(width: 14),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontFamily: 'Teacher',
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                Icon(
+                  isExpanded
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down,
+                ),
+              ],
+            ),
           ),
+        ),
 
-          if (isExpanded)
-            Column(
-              children: subjects.map((subject) {
-                return ListTile(
-                  leading: const Icon(Icons.play_arrow),
-                  title: Text(subject),
-                  onTap: () => onSubjectTap(subject),
-                );
-              }).toList(),
-            ),
+        /// SUBJECT LIST
+        if (isExpanded) ...[
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: subjects.map((subject) {
+              return GestureDetector(
+                onTap: () => onSubjectTap(subject),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: Colors.grey.shade300),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    subject,
+                    style: const TextStyle(
+                      fontFamily: 'Teacher',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ],
-      ),
+      ],
     );
   }
 }

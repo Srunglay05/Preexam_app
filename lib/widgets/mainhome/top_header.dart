@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:prexam/controllers/reminder_controller.dart';
-import 'package:prexam/screens/reminder_list_page.dart';
+import 'package:prexam/screens/notifi_screen.dart';
 import 'package:prexam/widgets/mainhome/notification_service.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -102,7 +102,7 @@ class _TopHeaderState extends State<TopHeader> {
             children: [
               IconButton(
                 onPressed: () {
-                  Get.to(() => ReminderListPage());
+                  Get.to(() => NotificationInboxScreen());
                 },
                 icon: const Icon(Icons.notifications_none_rounded),
               ),

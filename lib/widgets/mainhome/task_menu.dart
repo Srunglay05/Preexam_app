@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:prexam/screens/create_reminder_page.dart';
+import 'package:prexam/screens/reminder/create_reminder_page.dart';
 import 'package:prexam/screens/score_input.dart';
-import 'package:prexam/screens/solution_screen.dart';
-import 'package:prexam/screens/task_screen.dart';
+import 'package:prexam/screens/solutions/solution_screen.dart';
+import 'package:prexam/screens/tasks/task_screen.dart';
 
 class TaskMenu extends StatelessWidget {
   const TaskMenu({Key? key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/reminder_controller.dart';
-import '../models/reminder.dart';
-import '../widgets/mainhome/notification_service.dart';
+import '../../controllers/reminder_controller.dart';
+import '../../models/reminder.dart';
+import '../../widgets/mainhome/notification_service.dart';
 
 class CreateReminderPage extends StatefulWidget {
   const CreateReminderPage({super.key});

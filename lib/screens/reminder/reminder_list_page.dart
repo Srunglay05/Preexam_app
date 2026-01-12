@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/reminder_controller.dart';
+import '../../controllers/reminder_controller.dart';
 import 'create_reminder_page.dart';
 import 'edit_reminder_page.dart';
 

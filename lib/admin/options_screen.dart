@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:prexam/admin/add_course/addcourse_screen.dart';
+import 'package:prexam/admin/add_solution/addsolution_screen.dart';
 import 'package:prexam/admin/add_task/addtask_screen.dart';
 import 'option_button.dart';
 
@@ -52,7 +54,7 @@ class OptionsScreen extends StatelessWidget {
 
                 /// Illustration
                 SizedBox(
-                  height: 180,
+                  height: 200,
                   child: Image.asset(
                     'assets/images/timez.png',
                     fit: BoxFit.contain,
@@ -96,14 +98,24 @@ class OptionsScreen extends StatelessWidget {
                 OptionButton(
                   icon: Icons.lightbulb_outline,
                   text: 'Add New Solution',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => const AddSolutionScreen()),
+                    );
+                  },
                 ),
                 const SizedBox(height: 14),
 
                 OptionButton(
                   icon: Icons.menu_book,
                   text: 'Add New Course',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context, 
+                      MaterialPageRoute(builder: (context) => const AddCourseScreen()),
+                    );
+                  },
                 ),
               ],
             ),

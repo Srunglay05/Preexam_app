@@ -8,7 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:prexam/screens/about_us.dart';
-import 'package:prexam/screens/register.dart';
+import 'package:prexam/screens/authentication/register.dart';
 import 'package:prexam/admin/options_screen.dart';
 
 import 'wave_clipper.dart';

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:prexam/controllers/RegisterController.dart';
 import 'package:flutter/gestures.dart';
-import 'package:prexam/screens/login.dart';
+import 'package:prexam/screens/authentication/login.dart';
 
 class RegisterWid {
   static Widget registerStudent() {

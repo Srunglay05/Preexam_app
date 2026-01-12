@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:prexam/models/Appuser.dart';
-import 'package:prexam/screens/login.dart';
+import 'package:prexam/screens/authentication/login.dart';
 
 class RegisterController extends GetxController {
   // Text controllers

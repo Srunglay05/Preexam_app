@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/reminder_controller.dart';
-import '../models/reminder.dart';
+import '../../controllers/reminder_controller.dart';
+import '../../models/reminder.dart';
 import 'package:prexam/widgets/mainhome/notification_service.dart';
 
 class EditReminderPage extends StatefulWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:prexam/screens/sciencelist.dart';
+import 'package:prexam/screens/tasks/science/sciencelist.dart';
 
 class ScienceScreen extends StatelessWidget {
   const ScienceScreen({super.key});

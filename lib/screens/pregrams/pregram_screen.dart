@@ -5,9 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import '../controllers/pregram_controller.dart';
-import '../screens/comments_screen.dart';
-import '../screens/favorite_posts_screen.dart';
+import '../../controllers/pregram_controller.dart';
+import 'comments_screen.dart';
+import 'favorite_posts_screen.dart';
 
 class PregramScreen extends StatelessWidget {
   const PregramScreen({super.key});

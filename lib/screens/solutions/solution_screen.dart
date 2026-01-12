@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:prexam/screens/solutionlist.dart';
+import 'package:prexam/screens/solutions/solutionlist.dart';
 
 class SolutionScreen extends StatelessWidget {
   const SolutionScreen({super.key});
