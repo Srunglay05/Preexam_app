@@ -13,9 +13,12 @@ class RegisterController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // Loading state
+  // UI state
   final isLoading = false.obs;
   final isPasswordHidden = true.obs;
+
+  // 🔽 ROLE SELECTION (User / Admin)
+  final RxString selectedRole = 'User'.obs;
 
   // Firebase instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -27,12 +30,16 @@ class RegisterController extends GetxController {
   RegisterController() {
     _googleSignIn = kIsWeb
         ? GoogleSignIn(
-              clientId: "362443042369-h2hklv7bqq12j6mtc1l4m6fsumbg3oqd.apps.googleusercontent.com",
+            clientId:
+                "362443042369-h2hklv7bqq12j6mtc1l4m6fsumbg3oqd.apps.googleusercontent.com",
             scopes: ['email'],
           )
         : GoogleSignIn();
   }
 
+  // =======================
+  // EMAIL & PASSWORD REGISTER
+  // =======================
   Future<void> register() async {
     final username = usernameController.text.trim();
     final email = emailController.text.trim();
@@ -51,7 +58,6 @@ class RegisterController extends GetxController {
     try {
       isLoading.value = true;
 
-    
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -64,15 +70,15 @@ class RegisterController extends GetxController {
         return;
       }
 
-     
+      // Send verification email
       await user.sendEmailVerification();
-      debugPrint("Verification email sent to $email");
 
-      // 3️⃣ Save user to Firestore
+      // Save user to Firestore WITH ROLE
       AppUser newUser = AppUser(
         uid: user.uid,
         email: email,
         username: username,
+        role: selectedRole.value, // 🔥 ROLE SAVED
       );
 
       await _firestore
@@ -85,9 +91,7 @@ class RegisterController extends GetxController {
         "Account created. Please verify your email.",
       );
 
-      // 4️⃣ Navigate to login
       Get.offAll(() => LoginScreen());
-
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Auth Error", e.message ?? "Registration failed");
     } catch (e) {
@@ -97,7 +101,9 @@ class RegisterController extends GetxController {
     }
   }
 
-
+  // =======================
+  // GOOGLE SIGN-IN
+  // =======================
   Future<void> registerWithGoogle() async {
     try {
       isLoading.value = true;
@@ -128,11 +134,12 @@ class RegisterController extends GetxController {
         return;
       }
 
-      // Save / merge user in Firestore
+      // Save / merge user WITH ROLE
       AppUser newUser = AppUser(
         uid: user.uid,
         email: user.email ?? "",
         username: user.displayName ?? "User",
+        role: selectedRole.value, // 🔥 ROLE SAVED
       );
 
       await _firestore
@@ -142,7 +149,6 @@ class RegisterController extends GetxController {
 
       Get.snackbar("Success", "Signed in with Google");
       Get.offAll(() => LoginScreen());
-
     } catch (e) {
       Get.snackbar("Error", "Google Sign-In failed: $e");
     } finally {
@@ -150,7 +156,6 @@ class RegisterController extends GetxController {
     }
   }
 
- 
   @override
   void onClose() {
     usernameController.dispose();
