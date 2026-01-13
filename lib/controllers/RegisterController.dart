@@ -4,27 +4,25 @@ import 'package:get/get.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:prexam/models/Appuser.dart';
 import 'package:prexam/screens/authentication/login.dart';
 
 class RegisterController extends GetxController {
-  // Text controllers
+  // =======================
+  // TEXT CONTROLLERS
+  // =======================
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // UI state
+  // UI STATE
   final isLoading = false.obs;
   final isPasswordHidden = true.obs;
 
-  // 🔽 ROLE SELECTION (User / Admin)
-  final RxString selectedRole = 'User'.obs;
-
-  // Firebase instances
+  // FIREBASE
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Google Sign-In
+  // GOOGLE SIGN-IN
   late final GoogleSignIn _googleSignIn;
 
   RegisterController() {
@@ -64,27 +62,25 @@ class RegisterController extends GetxController {
         password: password,
       );
 
-      User? user = userCredential.user;
-      if (user == null) {
-        Get.snackbar("Error", "User creation failed");
-        return;
-      }
+      final user = userCredential.user;
+      if (user == null) return;
 
       // Send verification email
       await user.sendEmailVerification();
 
-      // Save user to Firestore WITH ROLE
-      AppUser newUser = AppUser(
-        uid: user.uid,
-        email: email,
-        username: username,
-        role: selectedRole.value, // 🔥 ROLE SAVED
-      );
+      final userRef = _firestore.collection('users').doc(user.uid);
+      final doc = await userRef.get();
 
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .set(newUser.toMap());
+      // 🔐 CREATE USER ONLY ONCE
+      if (!doc.exists) {
+        await userRef.set({
+          'uid': user.uid,
+          'email': email,
+          'username': username,
+          'role': 'user', // ✅ set once
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+      }
 
       Get.snackbar(
         "Success",
@@ -92,17 +88,18 @@ class RegisterController extends GetxController {
       );
 
       Get.offAll(() => LoginScreen());
+
     } on FirebaseAuthException catch (e) {
       Get.snackbar("Auth Error", e.message ?? "Registration failed");
     } catch (e) {
-      Get.snackbar("Error", "Something went wrong: $e");
+      Get.snackbar("Error", "Something went wrong");
     } finally {
       isLoading.value = false;
     }
   }
 
   // =======================
-  // GOOGLE SIGN-IN
+  // GOOGLE SIGN-IN REGISTER
   // =======================
   Future<void> registerWithGoogle() async {
     try {
@@ -110,8 +107,8 @@ class RegisterController extends GetxController {
       UserCredential userCredential;
 
       if (kIsWeb) {
-        GoogleAuthProvider provider = GoogleAuthProvider();
-        userCredential = await _auth.signInWithPopup(provider);
+        userCredential =
+            await _auth.signInWithPopup(GoogleAuthProvider());
       } else {
         final GoogleSignInAccount? googleUser =
             await _googleSignIn.signIn();
@@ -128,34 +125,36 @@ class RegisterController extends GetxController {
             await _auth.signInWithCredential(credential);
       }
 
-      User? user = userCredential.user;
-      if (user == null) {
-        Get.snackbar("Error", "Google Sign-In failed");
-        return;
+      final user = userCredential.user;
+      if (user == null) return;
+
+      final userRef = _firestore.collection('users').doc(user.uid);
+      final doc = await userRef.get();
+
+      // 🔐 CREATE ONLY IF NOT EXISTS
+      if (!doc.exists) {
+        await userRef.set({
+          'uid': user.uid,
+          'email': user.email ?? '',
+          'username': user.displayName ?? 'User',
+          'role': 'user', // ✅ NEVER overwrite
+          'createdAt': FieldValue.serverTimestamp(),
+        });
       }
-
-      // Save / merge user WITH ROLE
-      AppUser newUser = AppUser(
-        uid: user.uid,
-        email: user.email ?? "",
-        username: user.displayName ?? "User",
-        role: selectedRole.value, // 🔥 ROLE SAVED
-      );
-
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .set(newUser.toMap(), SetOptions(merge: true));
 
       Get.snackbar("Success", "Signed in with Google");
       Get.offAll(() => LoginScreen());
+
     } catch (e) {
-      Get.snackbar("Error", "Google Sign-In failed: $e");
+      Get.snackbar("Error", "Google Sign-In failed");
     } finally {
       isLoading.value = false;
     }
   }
 
+  // =======================
+  // CLEAN UP
+  // =======================
   @override
   void onClose() {
     usernameController.dispose();

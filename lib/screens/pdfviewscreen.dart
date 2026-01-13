@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-class PdfViewScreen extends StatelessWidget {
+class ImageViewScreen extends StatelessWidget {
   final String title;
-  final String assetPath;
+  final String imageUrl;
 
-  const PdfViewScreen({
+  const ImageViewScreen({
     super.key,
     required this.title,
-    required this.assetPath,
+    required this.imageUrl,
   });
 
   @override
@@ -32,12 +31,22 @@ class PdfViewScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
       ),
-
-      // ✅ IMPORTANT: force size on web
-      body: SizedBox.expand(
-        child: SfPdfViewer.asset(
-          assetPath,
-        ),
+      body: Center(
+        child: imageUrl.isNotEmpty
+            ? InteractiveViewer(
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Text('Failed to load image.');
+                  },
+                ),
+              )
+            : const Text('No image available.'),
       ),
     );
   }

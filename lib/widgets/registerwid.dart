@@ -55,39 +55,39 @@ class RegisterWid {
             const SizedBox(height: 25),
 
             /// ROLE DROPDOWN
-            Obx(() => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: controller.selectedRole.value,
-                      isExpanded: true,
-                      icon: const Icon(Icons.arrow_drop_down),
-                      style: const TextStyle(
-                        fontFamily: 'Teacher',
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'User',
-                          child: Text('User', style: TextStyle(fontFamily: 'Teacher')),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Admin',
-                          child: Text('Admin', style: TextStyle(fontFamily: 'Teacher')),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        controller.selectedRole.value = value!;
-                      },
-                    ),
-                  ),
-                )),
+            // Obx(() => Container(
+            //       padding: const EdgeInsets.symmetric(horizontal: 15),
+            //       decoration: BoxDecoration(
+            //         color: Colors.white,
+            //         borderRadius: BorderRadius.circular(20),
+            //         border: Border.all(color: Colors.grey),
+            //       ),
+            //       child: DropdownButtonHideUnderline(
+            //         child: DropdownButton<String>(
+            //           value: controller.selectedRole.value,
+            //           isExpanded: true,
+            //           icon: const Icon(Icons.arrow_drop_down),
+            //           style: const TextStyle(
+            //             fontFamily: 'Teacher',
+            //             fontSize: 16,
+            //             color: Colors.black,
+            //           ),
+            //           items: const [
+            //             DropdownMenuItem(
+            //               value: 'User',
+            //               child: Text('User', style: TextStyle(fontFamily: 'Teacher')),
+            //             ),
+            //             DropdownMenuItem(
+            //               value: 'Admin',
+            //               child: Text('Admin', style: TextStyle(fontFamily: 'Teacher')),
+            //             ),
+            //           ],
+            //           onChanged: (value) {
+            //             controller.selectedRole.value = value!;
+            //           },
+            //         ),
+            //       ),
+            //     )),
 
             const SizedBox(height: 25),
 

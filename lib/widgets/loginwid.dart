@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:prexam/controllers/loginController.dart';
+import 'package:prexam/screens/authentication/register.dart';
+import 'package:flutter/gestures.dart';
+
 
 class LoginWid {
   static Widget inputStudent({
@@ -104,48 +107,74 @@ class LoginWid {
                 )),
 
             const SizedBox(height: 25),
+                  Align(
+              alignment: Alignment.center,
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    const TextSpan(
+                      text: 'do not have an account? ',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontFamily: 'Teacher',
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Register',
+                      style: const TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Teacher',
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => Get.offAll(() => RegisterScreen()),
+                    ),
+                  ],
+                ),
+              ),
+            ),
 
             /// 🔽 ROLE DROPDOWN (UI ONLY)
-            Obx(() => Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black26,
-                        blurRadius: 8,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton<String>(
-                      value: controller.selectedRole.value,
-                      isExpanded: true,
-                      style: const TextStyle(
-                        fontFamily: 'Teacher',
-                        fontSize: 16,
-                        color: Colors.black,
-                      ),
-                      items: const [
-                        DropdownMenuItem(
-                          value: 'User',
-                          child: Text('User',
-                              style: TextStyle(fontFamily: 'Teacher')),
-                        ),
-                        DropdownMenuItem(
-                          value: 'Admin',
-                          child: Text('Admin',
-                              style: TextStyle(fontFamily: 'Teacher')),
-                        ),
-                      ],
-                      onChanged: (value) {
-                        controller.selectedRole.value = value!;
-                      },
-                    ),
-                  ),
-                )),
+            // Obx(() => Container(
+            //       padding: const EdgeInsets.symmetric(horizontal: 15),
+            //       decoration: BoxDecoration(
+            //         color: Colors.white,
+            //         borderRadius: BorderRadius.circular(20),
+            //         boxShadow: const [
+            //           BoxShadow(
+            //             color: Colors.black26,
+            //             blurRadius: 8,
+            //             offset: Offset(0, 3),
+            //           ),
+            //         ],
+            //       ),
+            //       child: DropdownButtonHideUnderline(
+            //         child: DropdownButton<String>(
+            //           value: controller.selectedRole.value,
+            //           isExpanded: true,
+            //           style: const TextStyle(
+            //             fontFamily: 'Teacher',
+            //             fontSize: 16,
+            //             color: Colors.black,
+            //           ),
+            //           items: const [
+            //             DropdownMenuItem(
+            //               value: 'User',
+            //               child: Text('User',
+            //                   style: TextStyle(fontFamily: 'Teacher')),
+            //             ),
+            //             DropdownMenuItem(
+            //               value: 'Admin',
+            //               child: Text('Admin',
+            //                   style: TextStyle(fontFamily: 'Teacher')),
+            //             ),
+            //           ],
+            //           onChanged: (value) {
+            //             controller.selectedRole.value = value!;
+            //           },
+            //         ),
+            //       ),
+            //     )),
 
             const SizedBox(height: 40),
 

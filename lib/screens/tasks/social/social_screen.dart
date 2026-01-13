@@ -11,7 +11,7 @@ class SocialScreen extends StatelessWidget {
     {'icon': Icons.calculate, 'title': 'Mathematics'},
     {'icon': Icons.public, 'title': 'Earth Science'},
     {'icon': Icons.book, 'title': 'Khmer Literature'},
-    {'icon': Icons.map_sharp, 'title': 'Historial'},
+    {'icon': Icons.map_sharp, 'title': 'History'},
     //{'icon': Icons.my_library_books, 'title': 'English Literature'},
   ];
 

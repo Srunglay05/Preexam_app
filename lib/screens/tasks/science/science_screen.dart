@@ -11,7 +11,7 @@ class ScienceScreen extends StatelessWidget {
     {'icon': Icons.calculate, 'title': 'Mathematics'},
     {'icon': Icons.science_outlined, 'title': 'Chemistry'},
     {'icon': Icons.book, 'title': 'Khmer Literature'},
-    {'icon': Icons.map_outlined, 'title': 'Historial'},
+    {'icon': Icons.map_outlined, 'title': 'History'},
     //{'icon': Icons.my_library_books, 'title': 'English Literature'},
   ];
 
@@ -46,7 +46,7 @@ class ScienceScreen extends StatelessWidget {
           return InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
-              // ✅ NAVIGATE WITH SUBJECT NAME
+              
               Get.to(
                 () => ScienceListScreen(
                   subjectTitle: task['title'],

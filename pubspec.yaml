@@ -50,9 +50,9 @@ dependencies:
   shared_preferences: ^2.1.1
   google_sign_in: ^6.1.0
   http: ^1.1.0
-  # file_picker: ^6.1.1
-  syncfusion_flutter_pdfviewer: 32.1.19
-  flutter_local_notifications: 14.1.1
+  file_picker: ^10.3.8
+  syncfusion_flutter_pdfviewer: ^32.1.19
+  flutter_local_notifications: ^14.1.1
   timezone: 0.9.4
   
 
@@ -111,7 +111,12 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
-   
+  fonts:
+    - family: Teacher
+      fonts:
+        - asset: assets/fonts/Teachers_Italic.ttf
+        - asset: assets/fonts/Teachers_Variable.ttf
+          weight: 700
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
 
