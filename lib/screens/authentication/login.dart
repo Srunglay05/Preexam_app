@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import '../../widgets/loginwid.dart';
+import 'package:get/get.dart';
+import 'package:prexam/controllers/loginController.dart';
+import 'package:prexam/widgets/loginwid.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
 
-  final TextEditingController username = TextEditingController();
-  final TextEditingController password = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    // ✅ REGISTER CONTROLLER
+    Get.put(LoginController());
+
     return Scaffold(
-      backgroundColor: Colors.white,
       body: LoginWid.inputStudent(
-        controller1: username,
-        controller2: password,
+        controller1: emailController,
+        controller2: passwordController,
         context: context,
       ),
     );
