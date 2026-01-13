@@ -19,6 +19,9 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     'Pre-RUPP Examination',
   ];
 
+  final TextEditingController titleController =
+      TextEditingController();
+
   final ImagePicker _picker = ImagePicker();
   File? selectedImage;
 
@@ -93,7 +96,7 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                         const SizedBox(height: 6),
 
                         const Text(
-                          'Select course and upload image',
+                          'Select course, add title and image',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -150,6 +153,27 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                                   selectedCourse = value!;
                                 });
                               },
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        /// ✏️ COURSE / SOLUTION TITLE
+                        TextField(
+                          controller: titleController,
+                          style:
+                              const TextStyle(fontFamily: 'Teacher'),
+                          decoration: InputDecoration(
+                            labelText: 'Course / Solution Title',
+                            labelStyle: const TextStyle(
+                                fontFamily: 'Teacher'),
+                            filled: true,
+                            fillColor: const Color(0xFFF6F7FB),
+                            border: OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.circular(16),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
@@ -251,16 +275,19 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  if (selectedImage == null) {
+                                  if (titleController.text.isEmpty ||
+                                      selectedImage == null) {
                                     Get.snackbar(
                                       'Error',
-                                      'Please upload course image',
+                                      'Please add title and image',
                                     );
                                     return;
                                   }
 
                                   debugPrint(
                                       'Course: $selectedCourse');
+                                  debugPrint(
+                                      'Title: ${titleController.text}');
                                   debugPrint(
                                       'Image: ${selectedImage!.path}');
 
@@ -303,5 +330,11 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    super.dispose();
   }
 }

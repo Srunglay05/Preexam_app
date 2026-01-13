@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:prexam/controllers/nav_controller.dart';
 import 'package:prexam/navi_drawer/drawer_menus.dart';
-import 'package:prexam/screens/courses/courselist_screen.dart';
+import 'package:prexam/screens/courses/coursescreen.dart';
 import 'package:prexam/screens/pregrams/pregram_screen.dart';
 import 'package:prexam/screens/reminder/reminder_list_page.dart';
 import 'package:prexam/screens/score_input.dart';
@@ -83,7 +83,7 @@ class HomeMainScreen extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () => Get.to(() => CourselistScreen()),
+                onTap: () => Get.to(() => const CourseScreen()),
                 child: const Text(
                   "See All...",
                   style: TextStyle(

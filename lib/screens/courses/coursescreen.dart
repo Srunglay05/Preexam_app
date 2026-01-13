@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:prexam/screens/tasks/science/science_screen.dart';
+import 'package:prexam/screens/courses/IFL_course/IFLcourse_screen.dart';
+import 'package:prexam/screens/courses/RUPP_course/RUPPcourse_screen.dart';
+import 'package:prexam/screens/courses/dr_course/drcourse_screen.dart';
 
-class CourselistScreen extends StatelessWidget {
-  const CourselistScreen({super.key});
+class CourseScreen extends StatelessWidget {
+  const CourseScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +96,7 @@ class CourselistScreen extends StatelessWidget {
               title: 'Pre-Doctor \n Examination',
               image: 'assets/images/Dr.png',
               iconSize: 180, // 👈 CUSTOM ICON SIZE
-              onTap: () => Get.to(() => const ScienceScreen()),
+              onTap: () => Get.to(() => const DoctorCourseScreen()),
             ),
 
             /// ===== PRE-IFL =====
@@ -103,7 +105,7 @@ class CourselistScreen extends StatelessWidget {
               title: 'Pre-IFL \n Examination',
               image: 'assets/images/IFL.png',
               iconSize: 140,
-              onTap: () {},
+              onTap: () => Get.to(() => const IFLCourseScreen()),
             ),
 
             /// ===== PRE-RUPP =====
@@ -112,7 +114,7 @@ class CourselistScreen extends StatelessWidget {
               title: 'Pre-RUPP \n Examination',
               image: 'assets/images/RUPP_logo.png',
               iconSize: 125,
-              onTap: () {},
+              onTap: () => Get.to(() => const RUPPCourseScreen()),
             ),
 
             /// ===== CHEMISTRY =====
