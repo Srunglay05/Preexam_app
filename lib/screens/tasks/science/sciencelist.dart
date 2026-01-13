@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:prexam/screens/pdfviewscreen.dart';
+import 'package:prexam/screens/imagesviewscreen.dart';
 
 class ScienceListScreen extends StatelessWidget {
   final String subjectTitle;

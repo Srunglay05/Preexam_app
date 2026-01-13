@@ -169,21 +169,37 @@ class _ReminderListPageState extends State<ReminderListPage> {
                                   final confirmed = await showDialog<bool>(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                      title: const Text('Confirm Delete'),
+                                      title: const Text(
+                                        'Confirm Delete',
+                                        style: TextStyle(
+                                          fontFamily: "Teacher",
+                                        ),
+                                      ),
                                       content: const Text(
-                                          'Are you sure you want to delete this reminder?'),
+                                        'Are you sure you want to delete this reminder?',
+                                        style: TextStyle(
+                                          fontFamily: "Teacher",
+                                        ),
+                                      ),
                                       actions: [
                                         TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, false),
-                                          child: const Text('Cancel'),
+                                          onPressed: () => Navigator.pop(context, false),
+                                          child: const Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                              fontFamily: "Teacher",
+                                            ),
+                                          ),
                                         ),
                                         TextButton(
-                                          onPressed: () =>
-                                              Navigator.pop(context, true),
-                                          child: const Text('Delete',
-                                              style: TextStyle(
-                                                  color: Colors.red)),
+                                          onPressed: () => Navigator.pop(context, true),
+                                          child: const Text(
+                                            'Delete',
+                                            style: TextStyle(
+                                              fontFamily: "Teacher",
+                                              color: Colors.red,
+                                            ),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -199,10 +215,13 @@ class _ReminderListPageState extends State<ReminderListPage> {
                                     color: Colors.red,
                                     borderRadius: BorderRadius.circular(8),
                                   ),
-                                  child: const Icon(Icons.delete,
-                                      color: Colors.white, size: 20),
+                                  child: const Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
                                 ),
-                              ),
+                              )
                             ],
                           )
                         ],

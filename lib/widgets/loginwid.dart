@@ -113,7 +113,7 @@ class LoginWid {
                 text: TextSpan(
                   children: [
                     const TextSpan(
-                      text: 'do not have an account? ',
+                      text: 'Do not have account yet ? ',
                       style: TextStyle(
                         color: Colors.grey,
                         fontFamily: 'Teacher',

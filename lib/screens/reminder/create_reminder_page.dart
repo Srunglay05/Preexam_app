@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../controllers/reminder_controller.dart';
 import '../../models/reminder.dart';
-import '../../widgets/mainhome/notification_service.dart';
 
 class CreateReminderPage extends StatefulWidget {
   const CreateReminderPage({super.key});
@@ -23,12 +23,53 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
     super.dispose();
   }
 
+  /// ⏰ Modern Cupertino Time Picker
   Future<void> pickTime() async {
-    final t = await showTimePicker(
+    await showModalBottomSheet(
       context: context,
-      initialTime: selectedTime,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (_) {
+        return SizedBox(
+          height: 280,
+          child: Column(
+            children: [
+              // Top handle
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                width: 40,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade400,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+
+              Expanded(
+                child: CupertinoDatePicker(
+                  mode: CupertinoDatePickerMode.time,
+                  initialDateTime: DateTime(
+                    0,
+                    0,
+                    0,
+                    selectedTime.hour,
+                    selectedTime.minute,
+                  ),
+                  use24hFormat: false,
+                  onDateTimeChanged: (dt) {
+                    setState(() {
+                      selectedTime = TimeOfDay.fromDateTime(dt);
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
-    if (t != null) setState(() => selectedTime = t);
   }
 
   @override
@@ -37,8 +78,8 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
 
-      /// 🧭 Toolbar
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
@@ -47,13 +88,17 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
           style: TextStyle(
             fontFamily: "Teacher",
             fontSize: 25,
-            color: Colors.white,
           ),
         ),
       ),
 
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -61,10 +106,9 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
               child: Image.asset(
                 "assets/images/timee.png",
                 height: 180,
-                fit: BoxFit.contain,
               ),
             ),
-            /// 📅 Date
+
             Text(
               "${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
               style: const TextStyle(
@@ -76,7 +120,6 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
 
             const SizedBox(height: 10),
 
-            /// 📦 Card (same as EditReminder)
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -86,17 +129,12 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Title",
-                    style: TextStyle(
-                      fontFamily: "Teacher",
-                      fontSize: 16,
-                    ),
-                  ),
+                  const Text("Title",
+                      style:
+                          TextStyle(fontFamily: "Teacher", fontSize: 16)),
                   const SizedBox(height: 6),
                   TextField(
                     controller: subjectCtrl,
-                    style: const TextStyle(fontFamily: "Teacher"),
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -109,17 +147,12 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
 
                   const SizedBox(height: 16),
 
-                  const Text(
-                    "Description",
-                    style: TextStyle(
-                      fontFamily: "Teacher",
-                      fontSize: 16,
-                    ),
-                  ),
+                  const Text("Description",
+                      style:
+                          TextStyle(fontFamily: "Teacher", fontSize: 16)),
                   const SizedBox(height: 6),
                   TextField(
                     controller: detailCtrl,
-                    style: const TextStyle(fontFamily: "Teacher"),
                     decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.white,
@@ -132,7 +165,6 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
 
                   const SizedBox(height: 20),
 
-                  /// ⏰ Time Picker (LEFT)
                   Align(
                     alignment: Alignment.centerLeft,
                     child: GestureDetector(
@@ -160,60 +192,37 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
               ),
             ),
 
-            const Spacer(),
+            const SizedBox(height: 40),
 
-            /// 🔘 Submit Button (same style as EditReminder)
             Align(
               alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: SizedBox(
-                  width: 140,
-                  height: 52,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+              child: SizedBox(
+                width: 140,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    onPressed: () {
-                      if (subjectCtrl.text.isEmpty ||
-                          detailCtrl.text.isEmpty) {
-                        Get.snackbar("Error", "Please fill all fields");
-                        return;
-                      }
-
-                      final reminder = Reminder(
-                        id: DateTime.now().millisecondsSinceEpoch,
-                        title: subjectCtrl.text,
-                        description: detailCtrl.text,
-                        dateTime:
-                            DateTime.now().add(const Duration(minutes: 3)),
-                      );
-
-                      controller.addReminder(reminder);
-
-                      NotificationService.scheduleReminder(
-                      id: reminder.id,
-                      title: reminder.title,
-                      body: reminder.description,
-                      scheduledTime: reminder.dateTime,
+                  ),
+                  onPressed: () {
+                    final reminder = Reminder(
+                      id: DateTime.now().millisecondsSinceEpoch,
+                      title: subjectCtrl.text,
+                      description: detailCtrl.text,
+                      dateTime: DateTime.now(),
                     );
 
-                      NotificationService.onNotificationTriggered = (id) {
-                        controller.incrementFiredCount();
-                      };
-
-                      Get.back();
-                    },
-                    child: const Text(
-                      "Submit",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontFamily: "Teacher",
-                        color: Colors.white,
-                      ),
+                    controller.addReminder(reminder);
+                    Get.back();
+                  },
+                  child: const Text(
+                    "Submit",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "Teacher",
+                      color: Colors.white,
                     ),
                   ),
                 ),
