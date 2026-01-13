@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../controllers/loginController.dart';
 import '../../widgets/loginwid.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -9,6 +11,8 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.put(LoginController());
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: LoginWid.inputStudent(

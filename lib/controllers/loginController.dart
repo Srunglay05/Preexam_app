@@ -24,7 +24,7 @@ class LoginController extends GetxController {
   final isPasswordHidden = true.obs;
 
   // 🔽 ROLE DROPDOWN (UI ONLY)
-  final RxString selectedRole = 'User'.obs;
+  // final RxString selectedRole = 'User'.obs;
 
   // =====================
   // FIREBASE
@@ -73,7 +73,6 @@ class LoginController extends GetxController {
 
       print("Firebase login SUCCESS");
       print("UID: ${user.uid}");
-      print("Dropdown role selected (UI only): ${selectedRole.value}");
 
       await _handlePostLogin(user);
 
@@ -119,7 +118,6 @@ class LoginController extends GetxController {
 
       print("Google login SUCCESS");
       print("UID: ${user.uid}");
-      print("Dropdown role selected (UI only): ${selectedRole.value}");
 
       await _handlePostLogin(user);
 
@@ -150,18 +148,20 @@ class LoginController extends GetxController {
       Get.snackbar("Error", "User record not found");
       return;
     }
+// 🔥 READ ROLE SAFELY FROM FIRESTORE
+      final data = doc.data() as Map<String, dynamic>;
+      final role = data['role']?.toString().trim().toLowerCase() ?? 'user';
 
-    final role = doc['role'] ?? 'User';
-    print("Firestore role: $role");
+      // 🔍 DEBUG (VERY IMPORTANT)
+      print("🔥 UID: ${user.uid}");
+      print("🔥 ROLE FROM FIRESTORE: $role");
 
-    Get.snackbar("Success", "Login successful");
+      if (role == 'admin') {
+        Get.offAll(() => OptionsScreen()); // ADMIN
+      } else {
+        Get.offAll(() => HomeMainScreen()); // USER
+      }
 
-    // 🔥 ROLE-BASED NAVIGATION
-    if (role == 'Admin') {
-      Get.offAll(() => OptionsScreen());
-    } else {
-      Get.offAll(() => HomeMainScreen());
-    }
   }
 
   // =====================

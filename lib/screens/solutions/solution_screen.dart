@@ -11,7 +11,7 @@ class SolutionScreen extends StatelessWidget {
     {'icon': Icons.calculate, 'title': 'Mathematics'},
     {'icon': Icons.science_outlined, 'title': 'Chemistry'},
     {'icon': Icons.book, 'title': 'Khmer Literature'},
-    {'icon': Icons.map_outlined, 'title': 'Historial'},
+    {'icon': Icons.map_outlined, 'title': 'History'},
     {'icon': Icons.nature_people, 'title': 'Morality'},
     {'icon': Icons.landscape, 'title': 'Geography'},
     {'icon': Icons.public, 'title': 'Earth Science'},

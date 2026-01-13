@@ -1,12 +1,19 @@
 import 'dart:async';
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:prexam/controllers/reminder_controller.dart';
 import 'package:prexam/screens/home.dart';
+import 'package:prexam/admin/options_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:prexam/widgets/mainhome/notification_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:prexam/screens/authentication/login.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,8 +39,14 @@ void main() async {
   // Load reminders
   await reminderController.loadReminders();
 
-  runApp(const MyApp());
+  // runApp(DevicePreview(
+  //   enabled: true,
+  //   builder: (context) => const MyApp(),
+  // ));
+   runApp(const MyApp());
 }
+
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -42,7 +55,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const SplashScreen(),
+      initialRoute: '/',
+      getPages: [
+        GetPage(name: '/', page: () => const SplashScreen()),
+        GetPage(name: '/home', page: () => HomeScreen()),
+        GetPage(name: '/admin', page: () => OptionsScreen()),
+        GetPage(name: '/login', page: () => LoginScreen()), // import if needed
+      ],
     );
   }
 }
@@ -50,11 +69,43 @@ class MyApp extends StatelessWidget {
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
+  Future<void> checkLogin(BuildContext context) async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user == null) {
+      // Not logged in → go to login screen
+      Get.offAllNamed('/login');
+      return;
+    }
+
+    // Logged in → fetch role from Firestore
+    final doc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .get();
+
+    if (!doc.exists) {
+      Get.offAllNamed('/login');
+      return;
+    }
+
+    final data = doc.data() as Map<String, dynamic>;
+    final role = data['role']?.toString().trim().toLowerCase() ?? 'user';
+    print("🔥 SplashScreen UID: ${user.uid}, ROLE: $role");
+
+    if (role == 'admin') {
+      Get.offAllNamed('/admin');
+    } else {
+      Get.offAllNamed('/home');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Delay 3-4 seconds for splash
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(seconds: 4), () {
-        Get.off(() => HomeScreen());
+        checkLogin(context);
       });
     });
 
