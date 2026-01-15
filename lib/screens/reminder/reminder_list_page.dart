@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../controllers/reminder_controller.dart';
 import 'create_reminder_page.dart';
 import 'edit_reminder_page.dart';
+import 'package:prexam/widgets/mainhome/notification_service.dart';
 
 class ReminderListPage extends StatefulWidget {
   const ReminderListPage({super.key});
@@ -55,6 +56,13 @@ class _ReminderListPageState extends State<ReminderListPage> {
                           fontFamily: "Teacher",
                         ),
                       ),
+                    //   ElevatedButton(
+                    //   onPressed: () {
+                    //     NotificationService.sendTestNotification();
+                    //   },
+                    //   child: const Text("Send Test Notification"),
+                    // ),
+
                     ],
                   ),
                 ],

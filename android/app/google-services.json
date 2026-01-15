@@ -12,7 +12,20 @@
           "package_name": "com.example.prexam"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "510649460404-nk14dr5tahhss9n95jabvdfa4ffiqnoc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.prexam",
+            "certificate_hash": "b7709cb19813e8806fe7505cb31c61e3a22b75de"
+          }
+        },
+        {
+          "client_id": "510649460404-efbun0tv6p0js73t9chqbtm3uvcfkvv4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC4TNgh1LGkjh1KhDS84UNErAkyM9h0vEM"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "510649460404-efbun0tv6p0js73t9chqbtm3uvcfkvv4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "510649460404-kbaiilk5ep329m6mg5jikvpa8vmis7pn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.prexam"
+              }
+            }
+          ]
         }
       }
     }

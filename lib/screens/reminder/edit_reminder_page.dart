@@ -90,6 +90,25 @@ class _EditReminderPageState extends State<EditReminderPage> {
       },
     );
   }
+  /// 🔹 Combine the current date with selected time
+DateTime getScheduledDateTime() {
+  final now = DateTime.now();
+  DateTime scheduledDateTime = DateTime(
+    widget.reminder.dateTime.year,
+    widget.reminder.dateTime.month,
+    widget.reminder.dateTime.day,
+    selectedTime.hour,
+    selectedTime.minute,
+  );
+
+  // If the selected time already passed today, schedule for tomorrow
+  if (scheduledDateTime.isBefore(now)) {
+    scheduledDateTime = scheduledDateTime.add(const Duration(days: 1));
+  }
+
+  return scheduledDateTime;
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -229,25 +248,14 @@ class _EditReminderPageState extends State<EditReminderPage> {
                     ),
                   ),
                   onPressed: () {
-                    final updatedDateTime = DateTime(
-                      widget.reminder.dateTime.year,
-                      widget.reminder.dateTime.month,
-                      widget.reminder.dateTime.day,
-                      selectedTime.hour,
-                      selectedTime.minute,
-                    );
-
                     final updatedReminder = Reminder(
                       id: widget.reminder.id,
                       title: titleCtrl.text,
                       description: descCtrl.text,
-                      dateTime: updatedDateTime,
+                      dateTime: getScheduledDateTime(), // use function here
                     );
 
-                    controller.updateReminder(
-                      widget.index,
-                      updatedReminder,
-                    );
+                    controller.updateReminder(widget.index, updatedReminder);
 
                     NotificationService.scheduleReminder(
                       id: updatedReminder.id,

@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:prexam/controllers/task_controller.dart';
+
 class AddTaskScreen extends StatefulWidget {
   const AddTaskScreen({super.key});
 
@@ -41,15 +42,14 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       context: context,
       category: category,
       subject: subject,
-      onPost: () async {
-        taskController.fetchTasks(); // ✅ refresh GetX tasks after posting
-      },
+      onPost: () => taskController.fetchTasks(),
     );
   }
 
   Future<String> getAdminName() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    final doc = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(uid).get();
     if (!doc.exists) return "Admin";
     return doc['username'] ?? "Admin";
   }
@@ -65,14 +65,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         title: FutureBuilder<String>(
           future: getAdminName(),
           builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Text(
-                'Add Task',
-                style: TextStyle(fontFamily: 'Teacher', fontSize: 22),
-              );
-            }
+            final adminName = snapshot.data ?? 'Admin';
             return Text(
-              'Add Task • ${snapshot.data}',
+              'Add Task • $adminName',
               style: const TextStyle(fontFamily: 'Teacher', fontSize: 22),
             );
           },
@@ -92,6 +87,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+              // 🔹 Category Cards ONLY
               CategoryCard(
                 title: 'Science',
                 icon: Icons.science,
@@ -103,7 +99,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   });
                 },
                 subjects: scienceSubjects,
-                onSubjectTap: (subject) => onSubjectSelected('Science', subject),
+                onSubjectTap: (subject) =>
+                    onSubjectSelected('Science', subject),
               ),
               const SizedBox(height: 16),
               CategoryCard(

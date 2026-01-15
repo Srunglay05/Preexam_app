@@ -1,17 +1,33 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+import 'CourseController.dart';
 
 class AddCourseScreen extends StatefulWidget {
-  const AddCourseScreen({super.key});
+  final String? editCourseId;    // For editing
+  final String? editTitle;       // Existing title
+  final String? editCourseType;  // Existing course type
+  final String? editPdfUrl;      // Existing PDF URL
+
+  const AddCourseScreen({
+    super.key,
+    this.editCourseId,
+    this.editTitle,
+    this.editCourseType,
+    this.editPdfUrl,
+  });
 
   @override
   State<AddCourseScreen> createState() => _AddCourseScreenState();
 }
 
 class _AddCourseScreenState extends State<AddCourseScreen> {
-  String selectedCourse = 'Pre-Doctor Examination';
+  final CourseController courseController = Get.put(CourseController());
+  final TextEditingController titleController = TextEditingController();
 
   final List<String> courses = [
     'Pre-Doctor Examination',
@@ -19,31 +35,51 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
     'Pre-RUPP Examination',
   ];
 
-  final TextEditingController titleController =
-      TextEditingController();
+  final Map<String, List<String>> subjectsMap = {
+    'Pre-Doctor Examination': ['Physics', 'Biology', 'Mathematics', 'Chemistry'],
+    'Pre-RUPP Examination': ['Physics', 'Biology', 'Mathematics', 'Chemistry'],
+  };
 
-  final ImagePicker _picker = ImagePicker();
-  File? selectedImage;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.editCourseId != null) {
+      loadCourseData(); // Load existing course data for editing
+    }
+  }
+
+  Future<void> loadCourseData() async {
+    final doc = await FirebaseFirestore.instance
+        .collection('courses')
+        .doc(widget.editCourseId)
+        .get();
+
+    if (doc.exists) {
+      final data = doc.data()!;
+      titleController.text = data['title'] ?? '';
+      courseController.selectedCourse.value = data['courseType'] ?? '';
+      courseController.selectedSubject.value = data['subjectTitle'] ?? '';
+      courseController.selectedPdf.value = null; // No new file selected yet
+      courseController.selectedPdfUrl.value = data['pdfUrl'] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /// 🔵 BLUE APP BAR
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Add Course',
-          style: TextStyle(
+        title: Text(
+          widget.editCourseId != null ? 'Edit Course' : 'Add Course',
+          style: const TextStyle(
             fontFamily: 'Teacher',
             fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: true,
       ),
-
-      /// 🌈 GRADIENT BACKGROUND
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -60,8 +96,6 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
         child: Column(
           children: [
             const SizedBox(height: 24),
-
-            /// 🧾 CARD
             Expanded(
               child: Align(
                 alignment: Alignment.topCenter,
@@ -83,96 +117,131 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        /// TITLE
-                        const Text(
-                          'Add New Course',
-                          style: TextStyle(
+                        Text(
+                          widget.editCourseId != null
+                              ? 'Edit Course'
+                              : 'Add New Course',
+                          style: const TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
                             fontFamily: 'Teacher',
                           ),
                         ),
-
                         const SizedBox(height: 6),
-
                         const Text(
-                          'Select course, add title and image',
+                          'Select course, add title and PDF',
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
                             fontFamily: 'Teacher',
                           ),
                         ),
-
                         const SizedBox(height: 22),
 
-                        /// 🔽 COURSE DROPDOWN
+                        /// COURSE DROPDOWN
                         Container(
                           height: 56,
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
                             color: const Color(0xFFF6F7FB),
                             borderRadius: BorderRadius.circular(16),
-                            border: Border.all(
-                                color: Colors.grey.shade300),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.08),
-                                blurRadius: 12,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
+                            border: Border.all(color: Colors.grey.shade300),
                           ),
                           child: DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: selectedCourse,
-                              isExpanded: true,
-                              icon: const Icon(
-                                Icons.keyboard_arrow_down,
-                                size: 26,
-                              ),
-                              style: const TextStyle(
-                                fontFamily: 'Teacher',
-                                fontSize: 17,
-                                color: Colors.black,
-                              ),
-                              items: courses.map((course) {
-                                return DropdownMenuItem(
-                                  value: course,
-                                  child: Text(
-                                    course,
-                                    style: const TextStyle(
-                                      fontFamily: 'Teacher',
-                                    ),
+                            child: Obx(() => DropdownButton<String>(
+                                  value: courseController.selectedCourse.value.isEmpty
+                                      ? null
+                                      : courseController.selectedCourse.value,
+                                  isExpanded: true,
+                                  icon: const Icon(Icons.keyboard_arrow_down, size: 26),
+                                  style: const TextStyle(
+                                    fontFamily: 'Teacher',
+                                    fontSize: 17,
+                                    color: Colors.black,
                                   ),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedCourse = value!;
-                                });
-                              },
-                            ),
+                                  hint: const Text(
+                                    'Select Course',
+                                    style: TextStyle(fontFamily: 'Teacher', color: Colors.grey),
+                                  ),
+                                  items: courses.map((course) {
+                                    return DropdownMenuItem(
+                                      value: course,
+                                      child: Text(course, style: const TextStyle(fontFamily: 'Teacher')),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      courseController.selectedCourse.value = value;
+                                      courseController.selectedSubject.value = '';
+                                    }
+                                  },
+                                )),
                           ),
                         ),
 
                         const SizedBox(height: 20),
 
-                        /// ✏️ COURSE / SOLUTION TITLE
+                        /// SUBJECT DROPDOWN
+                        Obx(() {
+                          final course = courseController.selectedCourse.value;
+                          if (course == 'Pre-Doctor Examination' || course == 'Pre-RUPP Examination') {
+                            final subjects = subjectsMap[course] ?? [];
+                            return Container(
+                              height: 56,
+                              padding: const EdgeInsets.symmetric(horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF6F7FB),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Colors.grey.shade300),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  value: courseController.selectedSubject.value.isEmpty
+                                      ? null
+                                      : courseController.selectedSubject.value,
+                                  isExpanded: true,
+                                  icon: const Icon(Icons.keyboard_arrow_down, size: 26),
+                                  style: const TextStyle(
+                                    fontFamily: 'Teacher',
+                                    fontSize: 17,
+                                    color: Colors.black,
+                                  ),
+                                  hint: const Text(
+                                    'Select Subject',
+                                    style: TextStyle(fontFamily: 'Teacher', color: Colors.grey),
+                                  ),
+                                  items: subjects.map((subject) {
+                                    return DropdownMenuItem(
+                                      value: subject,
+                                      child: Text(subject, style: const TextStyle(fontFamily: 'Teacher')),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      courseController.selectedSubject.value = value;
+                                    }
+                                  },
+                                ),
+                              ),
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        }),
+
+                        const SizedBox(height: 20),
+
+                        /// COURSE TITLE
                         TextField(
                           controller: titleController,
-                          style:
-                              const TextStyle(fontFamily: 'Teacher'),
+                          style: const TextStyle(fontFamily: 'Teacher'),
                           decoration: InputDecoration(
-                            labelText: 'Course / Solution Title',
-                            labelStyle: const TextStyle(
-                                fontFamily: 'Teacher'),
+                            labelText: 'Course Title',
+                            labelStyle: const TextStyle(fontFamily: 'Teacher'),
                             filled: true,
                             fillColor: const Color(0xFFF6F7FB),
                             border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(16),
                               borderSide: BorderSide.none,
                             ),
                           ),
@@ -180,65 +249,58 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
 
                         const SizedBox(height: 20),
 
-                        /// 🖼️ IMAGE PICKER
+                        /// PDF PICKER
                         GestureDetector(
                           onTap: () async {
-                            final XFile? image =
-                                await _picker.pickImage(
-                              source: ImageSource.gallery,
-                              imageQuality: 75,
+                            final result = await FilePicker.platform.pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['pdf'],
                             );
-                            if (image != null) {
-                              setState(() {
-                                selectedImage = File(image.path);
-                              });
+                            if (result != null && result.files.single.path != null) {
+                              courseController.selectedPdf.value = File(result.files.single.path!);
+                              courseController.selectedPdfUrl.value = ''; // Clear existing URL if new PDF selected
                             }
                           },
-                          child: Container(
-                            height: 160,
-                            width: double.infinity,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF6F7FB),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                  color: Colors.grey.shade300),
-                              boxShadow: [
-                                BoxShadow(
-                                  color:
-                                      Colors.black.withOpacity(0.06),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 5),
-                                ),
-                              ],
-                            ),
-                            child: selectedImage == null
-                                ? Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.center,
-                                    children: const [
-                                      Icon(
-                                        Icons.image_outlined,
-                                        size: 44,
-                                        color: Colors.grey,
-                                      ),
-                                      SizedBox(height: 10),
-                                      Text(
-                                        'Tap to add course image',
-                                        style: TextStyle(
-                                          fontFamily: 'Teacher',
-                                          color: Colors.grey,
+                          child: Obx(
+                            () => Container(
+                              height: 200,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF6F7FB),
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(color: Colors.grey.shade300),
+                              ),
+                              child: courseController.selectedPdf.value != null
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(16),
+                                      child: SfPdfViewer.file(
+                                          courseController.selectedPdf.value!,
+                                          canShowScrollHead: false,
+                                          canShowScrollStatus: false),
+                                    )
+                                  : courseController.selectedPdfUrl.value.isNotEmpty
+                                      ? ClipRRect(
+                                          borderRadius: BorderRadius.circular(16),
+                                          child: SfPdfViewer.network(
+                                              courseController.selectedPdfUrl.value,
+                                              canShowScrollHead: false,
+                                              canShowScrollStatus: false),
+                                        )
+                                      : Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: const [
+                                            Icon(Icons.picture_as_pdf, size: 42, color: Colors.red),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              'Tap to add course PDF',
+                                              style: TextStyle(
+                                                fontFamily: 'Teacher',
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                : ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.circular(16),
-                                    child: Image.file(
-                                      selectedImage!,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
+                            ),
                           ),
                         ),
 
@@ -252,15 +314,10 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                                 onPressed: () => Get.back(),
                                 style: OutlinedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(14),
                                   ),
-                                  side: BorderSide(
-                                      color:
-                                          Colors.grey.shade400),
-                                  padding:
-                                      const EdgeInsets.symmetric(
-                                          vertical: 14),
+                                  side: BorderSide(color: Colors.grey.shade400),
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
                                 ),
                                 child: const Text(
                                   'Cancel',
@@ -274,45 +331,72 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                             const SizedBox(width: 14),
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   if (titleController.text.isEmpty ||
-                                      selectedImage == null) {
-                                    Get.snackbar(
-                                      'Error',
-                                      'Please add title and image',
-                                    );
+                                      (courseController.selectedPdf.value == null &&
+                                          courseController.selectedPdfUrl.value.isEmpty) ||
+                                      ((courseController.selectedCourse.value ==
+                                                  'Pre-Doctor Examination' ||
+                                              courseController.selectedCourse.value ==
+                                                  'Pre-RUPP Examination') &&
+                                          courseController.selectedSubject.value.isEmpty)) {
+                                    Get.snackbar('Error', 'Please add title, subject (if needed), and PDF');
                                     return;
                                   }
 
-                                  debugPrint(
-                                      'Course: $selectedCourse');
-                                  debugPrint(
-                                      'Title: ${titleController.text}');
-                                  debugPrint(
-                                      'Image: ${selectedImage!.path}');
+                                  // Upload PDF if new file selected
+                                  String pdfUrl = courseController.selectedPdfUrl.value;
+                                  if (courseController.selectedPdf.value != null) {
+                                    final uploaded = await courseController.uploadPdf();
+                                    if (uploaded != null) pdfUrl = uploaded;
+                                  }
 
+                                  if (widget.editCourseId != null) {
+                                    // Update existing course
+                                    await FirebaseFirestore.instance
+                                        .collection('courses')
+                                        .doc(widget.editCourseId)
+                                        .update({
+                                      'title': titleController.text,
+                                      'courseType': courseController.selectedCourse.value,
+                                      'subjectTitle': courseController.selectedSubject.value.isEmpty
+                                          ? null
+                                          : courseController.selectedSubject.value,
+                                      'pdfUrl': pdfUrl,
+                                    });
+                                    Get.snackbar('Success', 'Course updated');
+                                  } else {
+                                    // Add new course
+                                    await FirebaseFirestore.instance.collection('courses').add({
+                                      'title': titleController.text,
+                                      'courseType': courseController.selectedCourse.value,
+                                      'subjectTitle': courseController.selectedSubject.value.isEmpty
+                                          ? null
+                                          : courseController.selectedSubject.value,
+                                      'pdfUrl': pdfUrl,
+                                      'createdAt': FieldValue.serverTimestamp(),
+                                    });
+                                    Get.snackbar('Success', 'Course added successfully');
+                                  }
+
+                                  courseController.clearData();
+                                  titleController.clear();
                                   Get.back();
                                 },
-                                style:
-                                    ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color(0xFF2196F3),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFF2196F3),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.circular(14),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  padding:
-                                      const EdgeInsets.symmetric(
-                                          vertical: 14),
+                                  padding: const EdgeInsets.symmetric(vertical: 14),
                                   elevation: 4,
                                 ),
-                                child: const Text(
-                                  'Add Course',
-                                  style: TextStyle(
+                                child: Text(
+                                  widget.editCourseId != null ? 'Update' : 'Post',
+                                  style: const TextStyle(
                                     fontFamily: 'Teacher',
                                     fontSize: 16,
-                                    fontWeight:
-                                        FontWeight.bold,
+                                    fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
@@ -320,6 +404,39 @@ class _AddCourseScreenState extends State<AddCourseScreen> {
                             ),
                           ],
                         ),
+
+                        /// DELETE BUTTON
+                        if (widget.editCourseId != null) ...[
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () async {
+                              await FirebaseFirestore.instance
+                                  .collection('courses')
+                                  .doc(widget.editCourseId)
+                                  .delete();
+                              courseController.clearData();
+                              titleController.clear();
+                              Get.back();
+                              Get.snackbar('Success', 'Course deleted');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.redAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                            ),
+                            child: const Text(
+                              'Delete Course',
+                              style: TextStyle(
+                                fontFamily: 'Teacher',
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ]
                       ],
                     ),
                   ),

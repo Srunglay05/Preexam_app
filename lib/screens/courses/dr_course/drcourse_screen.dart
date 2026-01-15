@@ -9,7 +9,7 @@ class DoctorCourseScreen extends StatelessWidget {
 
   final List<Map<String, dynamic>> doctorCourses = const [
     {'icon': Icons.science, 'title': 'Physics'},
-    {'icon': Icons.biotech, 'title': 'Biological'},
+    {'icon': Icons.biotech, 'title': 'Biology'},
     {'icon': Icons.calculate, 'title': 'Mathematics'},
     {'icon': Icons.science_outlined, 'title': 'Chemistry'},
   ];

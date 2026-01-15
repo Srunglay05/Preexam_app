@@ -1,7 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:prexam/screens/imagesviewscreen.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+
+class PdfViewScreen extends StatelessWidget {
+  final String title;
+  final String pdfUrl;
+
+  const PdfViewScreen({super.key, required this.title, required this.pdfUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+        centerTitle: true,
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontFamily: 'Teacher',
+            fontSize: 20,
+          ),
+        ),
+      ),
+      body: SfPdfViewer.network(pdfUrl),
+    );
+  }
+}
+
 class SolutionListScreen extends StatelessWidget {
   final String subjectTitle;
 
@@ -12,9 +39,8 @@ class SolutionListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 🔹 Stream to fetch image solutions for the subject
     final Stream<QuerySnapshot> solutionStream = FirebaseFirestore.instance
-        .collection('solutions') // your Firestore collection
+        .collection('solutions')
         .where('subject', isEqualTo: subjectTitle)
         .orderBy('createdAt', descending: true)
         .snapshots();
@@ -50,7 +76,7 @@ class SolutionListScreen extends StatelessWidget {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return const Center(
               child: Text(
-                'No images available',
+                'No PDFs available',
                 style: TextStyle(
                   fontFamily: 'Teacher',
                   fontSize: 18,
@@ -68,7 +94,7 @@ class SolutionListScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final solution = solutions[index].data() as Map<String, dynamic>;
               final title = solution['title'] ?? 'Untitled';
-              final imageUrl = solution['imageUrl'] ?? '';
+              final pdfUrl = solution['pdfUrl'] ?? '';
 
               return Material(
                 color: Colors.transparent,
@@ -76,15 +102,14 @@ class SolutionListScreen extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(12),
                   onTap: () {
-                    if (imageUrl.isEmpty) {
-                      Get.snackbar('No Image', 'This solution has no image.');
+                    if (pdfUrl.isEmpty) {
+                      Get.snackbar('No PDF', 'This solution has no PDF.');
                       return;
                     }
 
-                    // Open full screen image
-                    Get.to(() => ImageViewScreen(
+                    Get.to(() => PdfViewScreen(
                           title: title,
-                          imageUrl: imageUrl,
+                          pdfUrl: pdfUrl,
                         ));
                   },
                   child: Container(
@@ -103,14 +128,14 @@ class SolutionListScreen extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        imageUrl.isNotEmpty
+                        pdfUrl.isNotEmpty
                             ? const Icon(
-                                Icons.image,
-                                color: Colors.blue,
+                                Icons.picture_as_pdf,
+                                color: Colors.red,
                                 size: 32,
                               )
                             : const Icon(
-                                Icons.image_not_supported,
+                                Icons.picture_as_pdf,
                                 color: Colors.grey,
                                 size: 32,
                               ),

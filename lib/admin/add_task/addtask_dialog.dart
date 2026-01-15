@@ -11,12 +11,18 @@ Future<void> showAddTaskDialog({
   required String category,
   required String subject,
   VoidCallback? onPost,
+  String? taskId, // ✅ For editing
+  String? existingTitle,
+  String? existingImageUrl,
 }) async {
-  final TextEditingController titleController = TextEditingController();
+  final TextEditingController titleController = TextEditingController(
+    text: existingTitle ?? '',
+  );
   final ImagePicker picker = ImagePicker();
 
   File? selectedImage;
   Uint8List? webImageBytes;
+  String? currentImageUrl = existingImageUrl;
 
   // 🔹 Upload image to Firebase Storage (Web + Mobile)
   Future<String> uploadImage() async {
@@ -44,10 +50,8 @@ Future<void> showAddTaskDialog({
         builder: (context, setState) {
           return Dialog(
             backgroundColor: Colors.white,
-            insetPadding:
-                const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
             child: ConstrainedBox(
               constraints: BoxConstraints(maxHeight: size.height * 0.75),
               child: SingleChildScrollView(
@@ -56,9 +60,9 @@ Future<void> showAddTaskDialog({
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Add Task',
-                      style: TextStyle(
+                    Text(
+                      taskId == null ? 'Add Task' : 'Edit Task',
+                      style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         fontFamily: 'Teacher',
@@ -81,8 +85,7 @@ Future<void> showAddTaskDialog({
                       style: const TextStyle(fontFamily: 'Teacher'),
                       decoration: InputDecoration(
                         labelText: 'Task Title',
-                        labelStyle:
-                            const TextStyle(fontFamily: 'Teacher'),
+                        labelStyle: const TextStyle(fontFamily: 'Teacher'),
                         filled: true,
                         fillColor: Colors.grey.shade100,
                         border: OutlineInputBorder(
@@ -107,7 +110,9 @@ Future<void> showAddTaskDialog({
                           } else {
                             selectedImage = File(image.path);
                           }
-                          setState(() {});
+                          setState(() {
+                            currentImageUrl = null; // Replace existing image
+                          });
                         }
                       },
                       borderRadius: BorderRadius.circular(16),
@@ -119,13 +124,11 @@ Future<void> showAddTaskDialog({
                           color: Colors.grey.shade100,
                           border: Border.all(color: Colors.grey.shade300),
                         ),
-                        child: (selectedImage == null &&
-                                webImageBytes == null)
+                        child: (selectedImage == null && webImageBytes == null && currentImageUrl == null)
                             ? Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
-                                  Icon(Icons.image_outlined,
-                                      size: 44, color: Colors.grey),
+                                  Icon(Icons.image_outlined, size: 44, color: Colors.grey),
                                   SizedBox(height: 10),
                                   Text(
                                     'Tap to add image',
@@ -138,15 +141,11 @@ Future<void> showAddTaskDialog({
                               )
                             : ClipRRect(
                                 borderRadius: BorderRadius.circular(16),
-                                child: kIsWeb
-                                    ? Image.memory(
-                                        webImageBytes!,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.file(
-                                        selectedImage!,
-                                        fit: BoxFit.cover,
-                                      ),
+                                child: currentImageUrl != null
+                                    ? Image.network(currentImageUrl!, fit: BoxFit.cover)
+                                    : kIsWeb
+                                        ? Image.memory(webImageBytes!, fit: BoxFit.cover)
+                                        : Image.file(selectedImage!, fit: BoxFit.cover),
                               ),
                       ),
                     ),
@@ -159,20 +158,13 @@ Future<void> showAddTaskDialog({
                           child: OutlinedButton(
                             onPressed: () => Navigator.pop(context),
                             style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(12)),
-                              side: BorderSide(
-                                  color: Colors.grey.shade400),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              side: BorderSide(color: Colors.grey.shade400),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
                             child: const Text(
                               'Cancel',
-                              style: TextStyle(
-                                fontFamily: 'Teacher',
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(fontFamily: 'Teacher', color: Colors.black),
                             ),
                           ),
                         ),
@@ -181,53 +173,51 @@ Future<void> showAddTaskDialog({
                           child: ElevatedButton(
                             onPressed: () async {
                               if (titleController.text.trim().isEmpty ||
-                                  (selectedImage == null &&
-                                      webImageBytes == null)) {
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(
+                                  (selectedImage == null && webImageBytes == null && currentImageUrl == null)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
                                       'Please add title and image',
-                                      style: TextStyle(
-                                          fontFamily: 'Teacher'),
+                                      style: TextStyle(fontFamily: 'Teacher'),
                                     ),
                                   ),
                                 );
                                 return;
                               }
 
-                              final imageUrl = await uploadImage();
-                              final uid = FirebaseAuth
-                                  .instance.currentUser!.uid;
+                              String imageUrl = currentImageUrl ?? await uploadImage();
+                              final uid = FirebaseAuth.instance.currentUser!.uid;
 
-                              // 🔹 Save task to Firestore
-                              await FirebaseFirestore.instance
-                                  .collection('tasks')
-                                  .add({
-                                'title':
-                                    titleController.text.trim(),
-                                'category': category.trim(),
-                                'subject': subject.trim(), // ✅ IMPORTANT
-                                'addedBy': uid,
-                                'imageUrl': imageUrl, // ✅ correct field
-                                'createdAt':
-                                    FieldValue.serverTimestamp(),
-                              });
+                              if (taskId == null) {
+                                // Add new task
+                                await FirebaseFirestore.instance.collection('tasks').add({
+                                  'title': titleController.text.trim(),
+                                  'category': category.trim(),
+                                  'subject': subject.trim(),
+                                  'addedBy': uid,
+                                  'imageUrl': imageUrl,
+                                  'createdAt': FieldValue.serverTimestamp(),
+                                });
+                              } else {
+                                // Edit existing task
+                                await FirebaseFirestore.instance.collection('tasks').doc(taskId).update({
+                                  'title': titleController.text.trim(),
+                                  'imageUrl': imageUrl,
+                                  'updatedAt': FieldValue.serverTimestamp(),
+                                });
+                              }
 
                               if (onPost != null) onPost();
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(12)),
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                             ),
-                            child: const Text(
-                              'Post',
-                              style: TextStyle(
+                            child: Text(
+                              taskId == null ? 'Post' : 'Update',
+                              style: const TextStyle(
                                 fontFamily: 'Teacher',
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

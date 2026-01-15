@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'option_button.dart';
 import 'package:get/get.dart';
+import 'package:prexam/admin/AdminCourseScreen.dart';
 
 class OptionsScreen extends StatelessWidget {
   OptionsScreen({super.key});
@@ -205,7 +206,7 @@ class OptionsScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const AddSolutionScreen()),
+                      MaterialPageRoute(builder: (context) => AddSolutionScreen()),
                     );
                   },
                 ),
@@ -221,6 +222,16 @@ class OptionsScreen extends StatelessWidget {
                     );
                   },
                 ),
+                const SizedBox(height: 20),
+                OptionButton(
+                icon: Icons.menu_book,
+                text: 'Manage Courses',
+                onPressed: () {
+                  // Navigate to AdminCourseScreen
+                  Get.to(() => const AdminCourseScreen());
+                },
+              ),
+
               ],
             ),
           ),

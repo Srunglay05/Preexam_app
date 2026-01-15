@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:prexam/controllers/reminder_controller.dart';
-import 'package:prexam/screens/notifi_screen.dart';
-import 'package:prexam/widgets/mainhome/notification_service.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:prexam/screens/notifi_screen.dart'; // Make sure this file contains NotificationInboxScreen
+import 'package:prexam/widgets/mainhome/notification_service.dart' as notifService;
 
 class TopHeader extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -32,12 +30,15 @@ class _TopHeaderState extends State<TopHeader> {
     super.initState();
     loadUserData();
 
-    NotificationService.onNotificationTriggered = (id) {
-      controller.incrementFiredCount();
+    // Listen for notification triggers
+    notifService.NotificationService.onNotificationTriggered = (id) {
+      if (mounted) {
+        controller.incrementFiredCount();
+        debugPrint("🔥 Notification triggered! ID: $id at ${DateTime.now()}");
+      }
     };
   }
 
-  // ================= LOAD USER DATA =================
   Future<void> loadUserData() async {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
@@ -50,10 +51,12 @@ class _TopHeaderState extends State<TopHeader> {
 
       if (doc.exists) {
         final data = doc.data();
-        setState(() {
-          username = data?['username'] ?? 'User';
-          profileImageUrl = data?['profileImage'] ?? '';
-        });
+        if (mounted) {
+          setState(() {
+            username = data?['username'] ?? 'User';
+            profileImageUrl = data?['profileImage'] ?? '';
+          });
+        }
       }
     } catch (e) {
       debugPrint('Error loading user data: $e');
@@ -64,10 +67,11 @@ class _TopHeaderState extends State<TopHeader> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // ================= PROFILE IMAGE / OPEN DRAWER =================
+        // Profile / Open drawer
         GestureDetector(
           onTap: () {
             widget.scaffoldKey.currentState?.openDrawer();
+            debugPrint("📂 Drawer opened at ${DateTime.now()}");
           },
           child: CircleAvatar(
             radius: 20,
@@ -80,10 +84,8 @@ class _TopHeaderState extends State<TopHeader> {
                 : null,
           ),
         ),
-
         const SizedBox(width: 10),
-
-        // ================= USERNAME =================
+        // Username
         Expanded(
           child: Text(
             "Hello, $username",
@@ -95,14 +97,15 @@ class _TopHeaderState extends State<TopHeader> {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-
-        // ================= NOTIFICATIONS =================
+        // Notifications
         Obx(
           () => Stack(
+            clipBehavior: Clip.none,
             children: [
               IconButton(
                 onPressed: () {
-                  Get.to(() => NotificationInboxScreen());
+                  // ✅ Navigate safely
+                  Get.to(() =>  NotificationInboxScreen());
                 },
                 icon: const Icon(Icons.notifications_none_rounded),
               ),

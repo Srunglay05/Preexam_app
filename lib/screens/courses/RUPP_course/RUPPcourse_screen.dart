@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:prexam/screens/courses/RUPP_course/RUPPcourse_list.dart';
-// import the next screen if you have one
-// import 'package:prexam/screens/tasks/doctor/doctorlist.dart';
 
 class RUPPCourseScreen extends StatelessWidget {
   const RUPPCourseScreen({super.key});
@@ -28,7 +26,7 @@ class RUPPCourseScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: const Text(
-          'Pre-Doctor Examination Course',
+          'Pre-RUPP Examination Course', // ✅ Fixed
           style: TextStyle(
             fontFamily: 'Teacher',
             fontSize: 23,
@@ -48,7 +46,7 @@ class RUPPCourseScreen extends StatelessWidget {
           return InkWell(
             borderRadius: BorderRadius.circular(12),
             onTap: () {
-              // 🔁 Navigate to next screen if needed
+              // 🔁 Navigate to RUPPListScreen
               Get.to(() => RUPPListScreen(subjectTitle: course['title']));
               debugPrint("Selected: ${course['title']}");
             },

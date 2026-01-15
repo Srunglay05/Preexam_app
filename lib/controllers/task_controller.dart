@@ -11,6 +11,7 @@ class TaskController extends GetxController {
     fetchTasks();
   }
 
+  // Fetch tasks from Firestore
   void fetchTasks() {
     FirebaseFirestore.instance
         .collection('tasks')
@@ -25,7 +26,21 @@ class TaskController extends GetxController {
     });
   }
 
+  // Add a new task
   Future<void> addTask(Map<String, dynamic> taskData) async {
     await FirebaseFirestore.instance.collection('tasks').add(taskData);
+  }
+
+  // Delete a task
+  Future<void> deleteTask(String taskId) async {
+    await FirebaseFirestore.instance.collection('tasks').doc(taskId).delete();
+  }
+
+  // Update a task
+  Future<void> updateTask(String taskId, Map<String, dynamic> updatedData) async {
+    await FirebaseFirestore.instance
+        .collection('tasks')
+        .doc(taskId)
+        .update(updatedData);
   }
 }

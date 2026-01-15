@@ -1,15 +1,12 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-class PdfViewScreen extends StatelessWidget {
+class PdfViewScreens extends StatelessWidget {
   final String title;
-  final String pdfUrl;
+  final File file;
 
-  const PdfViewScreen({
-    super.key,
-    required this.title,
-    required this.pdfUrl,
-  });
+  const PdfViewScreens({super.key, required this.title, required this.file});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +15,7 @@ class PdfViewScreen extends StatelessWidget {
         title: Text(title),
         centerTitle: true,
       ),
-      body: SfPdfViewer.network(pdfUrl), // <-- Load PDF from URL
+      body: SfPdfViewer.file(file),
     );
   }
 }

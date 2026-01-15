@@ -71,6 +71,24 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
       },
     );
   }
+  DateTime getScheduledDateTime() {
+  final now = DateTime.now();
+  DateTime scheduledDateTime = DateTime(
+    now.year,
+    now.month,
+    now.day,
+    selectedTime.hour,
+    selectedTime.minute,
+  );
+
+  if (scheduledDateTime.isBefore(now)) {
+    scheduledDateTime = scheduledDateTime.add(const Duration(days: 1));
+  }
+
+  // Convert to UTC before saving in Firestore
+  return scheduledDateTime.toUtc();
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -206,17 +224,17 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  onPressed: () {
-                    final reminder = Reminder(
-                      id: DateTime.now().millisecondsSinceEpoch,
-                      title: subjectCtrl.text,
-                      description: detailCtrl.text,
-                      dateTime: DateTime.now(),
-                    );
+                 onPressed: () {
+                  final reminder = Reminder(
+                    id: DateTime.now().millisecondsSinceEpoch,
+                    title: subjectCtrl.text,
+                    description: detailCtrl.text,
+                    dateTime: getScheduledDateTime(), // call the function here
+                  );
 
-                    controller.addReminder(reminder);
-                    Get.back();
-                  },
+                  controller.addReminder(reminder);
+                  Get.back();
+                },
                   child: const Text(
                     "Submit",
                     style: TextStyle(

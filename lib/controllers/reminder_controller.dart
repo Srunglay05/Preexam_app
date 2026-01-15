@@ -64,7 +64,7 @@ class ReminderController extends GetxController {
     Reminder reminder = reminders[index];
     reminders.removeAt(index);
 
-    NotificationService.cancelAll();
+    NotificationService.cancelReminder( reminder.id);
 
     try {
       await _firestore
@@ -154,5 +154,10 @@ class ReminderController extends GetxController {
   /// Called when notification fires
   void incrementFiredCount() {
     firedNotifications.value++;
+  }
+  void decrementFiredCount() {
+    if (firedNotifications.value > 0) {
+      firedNotifications.value--;
+    }
   }
 }
